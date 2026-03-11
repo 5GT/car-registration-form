@@ -53,6 +53,11 @@ textarea{min-height:96px;resize:vertical}
 .choice input{position:absolute;opacity:0;pointer-events:none}
 .choice span{display:inline-flex;align-items:center;justify-content:center;min-height:42px;padding:10px 14px;border:1px solid #bfd0d2;border-radius:999px;background:#fff;color:#32555a;font-size:14px;font-weight:700;cursor:pointer;transition:.16s ease}
 .choice input:checked+span{background:var(--accent);border-color:var(--accent);color:#fff;transform:translateY(-1px)}
+.choice.toggle span{gap:10px;padding:8px 16px 8px 12px}
+.choice.toggle span::before{content:"";width:38px;height:22px;border-radius:999px;background:#d7e2e4;box-shadow:inset 0 0 0 1px rgba(50,85,90,.12);transition:.16s ease}
+.choice.toggle span::after{content:"";position:absolute;left:16px;top:50%;width:16px;height:16px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(32,51,58,.24);transform:translateY(-50%);transition:.16s ease}
+.choice.toggle input:checked+span::before{background:rgba(255,255,255,.38)}
+.choice.toggle input:checked+span::after{left:38px}
 .choice-note{margin-top:10px;border-left:4px solid #ceb37a;padding:10px 12px;border-radius:10px;background:#fff7e4;color:#6b5324;font-size:13px;line-height:1.55}
 .actions{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-top:22px}
 .btn{border:0;border-radius:16px;padding:14px 22px;font:inherit;font-size:15px;font-weight:800;cursor:pointer}
@@ -74,7 +79,6 @@ textarea{min-height:96px;resize:vertical}
     <section class="hero">
       <span class="eyebrow">차량등록 입력 전용 페이지</span>
       <h1>차량등록 신청</h1>
-      
     </section>
 
     <main class="panel">
@@ -145,6 +149,7 @@ const OWNERSHIP_INFO = {
 };
 const CATEGORY_NONE = "해당사항 없음";
 const CATEGORY_OPTIONS = [CATEGORY_NONE, "전기차", "경차", "대형", "장애인주차표지"];
+const CATEGORY_EXCLUSIVE = { "경차": "대형", "대형": "경차" };
 const CATEGORY_INFO = {
   "전기차": "전기차 충전 관련 등록은 관리사무소 안내를 따라 주세요.",
   "경차": "경차 전용구역 이용 기준은 단지 운영 기준을 확인해 주세요.",
@@ -189,7 +194,7 @@ function buildVehicleBlock(index) {
     </label>
   `).join("");
   const categoryOptions = CATEGORY_OPTIONS.map((label) => `
-    <label class="choice">
+    <label class="choice toggle">
       <input type="checkbox" name="category${index}" value="${escapeHtml(label)}" ${label === CATEGORY_NONE ? "checked" : ""}>
       <span>${escapeHtml(label)}</span>
     </label>
@@ -239,6 +244,7 @@ function buildVehicleBlock(index) {
         </div>
         <div class="c6">
           <label>차량구분 (중복 선택 가능)</label>
+          <div class="hint">경차와 대형은 동시에 선택할 수 없습니다.</div>
           <div class="choice-group" data-category-group="${index}">${categoryOptions}</div>
           <div id="categoryInfo${index}" class="choice-note" hidden></div>
         </div>
@@ -267,6 +273,12 @@ function normalizeCategories(index, toggledValue) {
   const otherInputs = inputs.filter((input) => input.value !== CATEGORY_NONE);
   if (toggledValue === CATEGORY_NONE && noneInput.checked) otherInputs.forEach((input) => { input.checked = false; });
   if (toggledValue !== CATEGORY_NONE) {
+    const toggledInput = inputs.find((input) => input.value === toggledValue);
+    const exclusiveValue = CATEGORY_EXCLUSIVE[toggledValue];
+    if (toggledInput && toggledInput.checked && exclusiveValue) {
+      const exclusiveInput = inputs.find((input) => input.value === exclusiveValue);
+      if (exclusiveInput) exclusiveInput.checked = false;
+    }
     const anyOtherChecked = otherInputs.some((input) => input.checked);
     if (anyOtherChecked) noneInput.checked = false;
     if (!anyOtherChecked) noneInput.checked = true;
@@ -476,4 +488,3 @@ updateVehicleVisibility();
 </script>
 </body>
 </html>
-
