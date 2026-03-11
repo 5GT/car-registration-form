@@ -149,10 +149,10 @@ const CATEGORY_NONE = "해당사항 없음";
 const CATEGORY_OPTIONS = [CATEGORY_NONE, "전기차", "경차", "대형", "장애인주차표지"];
 const CATEGORY_EXCLUSIVE = { "경차": "대형", "대형": "경차" };
 const CATEGORY_INFO = {
-  "전기차": "전기차 충전 관련 등록은 관리사무소 안내를 따라 주세요.",
-  "경차": "경차 전용구역 이용 기준은 단지 운영 기준을 확인해 주세요.",
-  "대형": "대형 차량은 단지 진입 또는 등록 제한이 있을 수 있습니다.",
-  "장애인주차표지": "유효한 장애인주차표지가 있는 차량만 해당 구역을 이용할 수 있습니다."
+  "전기차": "전기차 충전시설 이용을 위해 관리사무소에서 세대 카드에 차량 정보를 등록해야 합니다. (업체 변경 시 달라질 수 있습니다.)",
+  "경차": "경차는 경차 전용구역에 주차해야 하며, 이를 3회 이상 위반할 경우 월 1만 원의 주차료 할인 혜택이 영구 박탈됩니다.",
+  "대형": "높이 2.7m 초과 차량과 캠핑카, 카라반, 트레일러, 장의차는 단지 내 주차 등록 및 진입이 불가합니다.",
+  "장애인주차표지": "유효한 장애인 주차표지를 부착한 차량만 전용구역을 이용할 수 있으며, 미부착 차량이 주차할 경우 즉시 단속됩니다."
 };
 const REGION_OPTIONS = ["없음", "경기", "서울", "인천", "강원", "충북", "충남", "세종", "대전", "전북", "경북", "대구", "경남", "울산", "부산", "전남", "광주", "제주"];
 const VEHICLE_COUNT = 3;
@@ -241,9 +241,7 @@ function buildVehicleBlock(index) {
           <div id="ownershipInfo${index}" class="choice-note" hidden></div>
         </div>
         <div class="c6">
-          <label>차량구분 (중복 선택 가능)</label>
-          <div class="hint">경차와 대형은 동시에 선택할 수 없습니다.</div>
-          <div class="choice-group" data-category-group="${index}">${categoryOptions}</div>
+          <label>차량구분 (중복 선택 가능)</label>          <div class="choice-group" data-category-group="${index}">${categoryOptions}</div>
           <div id="categoryInfo${index}" class="choice-note" hidden></div>
         </div>
       </div>
@@ -486,6 +484,8 @@ updateVehicleVisibility();
 </script>
 </body>
 </html>
+
+
 
 
 
