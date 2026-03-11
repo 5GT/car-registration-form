@@ -54,6 +54,8 @@ textarea{min-height:96px;resize:vertical}
 .choice span{display:inline-flex;align-items:center;justify-content:center;min-height:42px;padding:10px 14px;border:1px solid #bfd0d2;border-radius:999px;background:#fff;color:#32555a;font-size:14px;font-weight:700;cursor:pointer;transition:.16s ease}
 .choice input:checked+span{background:var(--accent);border-color:var(--accent);color:#fff;transform:translateY(-1px)}
 .choice-note{margin-top:10px;border-left:4px solid #ceb37a;padding:10px 12px;border-radius:10px;background:#fff7e4;color:#6b5324;font-size:13px;line-height:1.55}
+.choice-note-stack{display:grid;gap:10px;margin-top:10px}
+.choice-note-stack .choice-note{margin-top:0}
 .actions{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-top:22px}
 .btn{border:0;border-radius:16px;padding:14px 22px;font:inherit;font-size:15px;font-weight:800;cursor:pointer}
 .btn.primary{background:linear-gradient(135deg, var(--accent), var(--accent-strong));color:#fff;box-shadow:0 14px 28px rgba(31,111,120,.22)}
@@ -242,7 +244,7 @@ function buildVehicleBlock(index) {
         </div>
         <div class="c6">
           <label>차량구분 (중복 선택 가능)</label>          <div class="choice-group" data-category-group="${index}">${categoryOptions}</div>
-          <div id="categoryInfo${index}" class="choice-note" hidden></div>
+          <div id="categoryInfo${index}" class="choice-note-stack" hidden></div>
         </div>
       </div>
     </section>
@@ -290,7 +292,7 @@ function updateCategoryInfo(index) {
     return;
   }
   info.hidden = false;
-  info.innerHTML = notes.map((note) => `<div>${escapeHtml(note)}</div>`).join("");
+  info.innerHTML = notes.map((note) => `<div class="choice-note">${escapeHtml(note)}</div>`).join("");
 }
 for (let index = 1; index <= VEHICLE_COUNT; index += 1) {
   document.querySelectorAll(`[data-ownership-group="${index}"] input`).forEach((input) => {
@@ -484,6 +486,9 @@ updateVehicleVisibility();
 </script>
 </body>
 </html>
+
+
+
 
 
 
