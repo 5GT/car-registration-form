@@ -16,7 +16,10 @@ begin
     create policy "anon can insert car registrations"
     on public.car_registrations
     for insert
-    to anon
+    to anon, authenticated
     with check (true);
   end if;
 end $$;
+
+create unique index if not exists car_registrations_plate_unique_idx
+on public.car_registrations (plate_region, plate_middle, plate_number);
