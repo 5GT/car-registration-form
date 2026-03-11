@@ -82,15 +82,19 @@ textarea{min-height:96px;resize:vertical}
 
     <main class="panel">
       <section class="section">
-        <h2 class="section-title">공통 정보</h2>
+        <h2 class="section-title">세대 정보</h2>
         <div class="grid">
           <div class="c6">
             <label for="buildingNumber">동</label>
-            <input id="buildingNumber" type="text" inputmode="numeric" placeholder="예: 3833">
+            <select id="buildingNumber">
+              <option value="">동 선택</option>
+            </select>
           </div>
           <div class="c6">
             <label for="unitNumber">호</label>
-            <input id="unitNumber" type="text" inputmode="numeric" placeholder="예: 1203">
+            <select id="unitNumber" disabled>
+              <option value="">호 선택</option>
+            </select>
           </div>
           <div class="c12">
             <label for="memo">메모</label>
@@ -156,6 +160,10 @@ const CATEGORY_INFO = {
   "대형": "높이 2.7m 초과 차량과 캠핑카, 카라반, 트레일러, 장의차는 단지 내 주차 등록 및 진입이 불가합니다.",
   "장애인주차표지": "유효한 장애인 주차표지를 부착한 차량만 전용구역을 이용할 수 있으며, 미부착 차량이 주차할 경우 즉시 단속됩니다."
 };
+function buildA52BLAptStructure(){const s={};const ensure=d=>(s[d]??={});const set=(d,h,t)=>{ensure(String(d))[String(h)]=t};const addFloors=(d,ff,ft,lines,by,ex=[])=>{const e=new Set(ex.map(String));for(let f=ff;f<=ft;f++){for(const ln of lines){const ho=String(f*100+ln);if(e.has(ho))continue;const t=by[ln];if(!t)continue;set(d,ho,t)}}};addFloors("3831",1,10,[1,2,3,4],{1:"97A",2:"97A",3:"97A",4:"97A"},["102","202"]);addFloors("3831",11,13,[3,4],{3:"97A",4:"97A"});addFloors("3832",1,11,[1,2,3,4],{1:"97A",2:"97A",3:"97A",4:"97A"});addFloors("3832",12,14,[3,4],{3:"97A",4:"97A"});for(let f=1;f<=11;f++){set("3833",f*100+1,"74");set("3833",f*100+2,"74");set("3833",f*100+3,"84A");set("3833",f*100+4,"84A")}set("3833",1203,"84A");set("3833",1204,"84A");set("3833",1303,"110P2");set("3834",102,"84B");for(let f=2;f<=20;f++){set("3834",f*100+1,"84B");set("3834",f*100+2,"84B");set("3834",f*100+3,"97B")}for(let f=1;f<=20;f++){set("3835",f*100+1,"84B");set("3835",f*100+2,"84B");set("3835",f*100+3,"97B")}for(let f=3;f<=19;f++){set("3836",f*100+1,"84B");set("3836",f*100+2,"84B");set("3836",f*100+3,"97B")}set("3836",102,"84B");set("3836",201,"84B");set("3836",202,"84B");set("3836",203,"97B");set("3836",2001,"110P1");for(let f=1;f<=20;f++){set("3837",f*100+1,"84B");set("3837",f*100+2,"84B");set("3837",f*100+3,"97B")}for(let f=3;f<=19;f++){set("3838",f*100+1,"84B");set("3838",f*100+2,"84B");set("3838",f*100+3,"97B")}set("3838",102,"84B");set("3838",201,"84B");set("3838",202,"84B");set("3838",203,"97B");set("3838",2001,"110P1");for(let f=1;f<=20;f++){set("3839",f*100+1,"84B");set("3839",f*100+2,"84B");set("3839",f*100+3,"97B")}delete s["3839"]["102"];addFloors("3840",1,14,[1,2,3,4],{1:"84A",2:"84A",3:"84A",4:"84A"},["1401","1402"]);set("3840",1503,"84A");set("3840",1504,"84A");addFloors("3841",1,14,[1,2,3,4],{1:"84A",2:"84A",3:"84A",4:"84A"});set("3841",1501,"84A");set("3841",1502,"84A");set("3841",1503,"84A");set("3841",1504,"84A");addFloors("3842",1,13,[1,2],{1:"84A",2:"84A"});set("3842",1401,"110P2");for(let f=1;f<=11;f++){set("3843",f*100+1,"110A");set("3843",f*100+2,"84B");set("3843",f*100+3,"74");set("3843",f*100+4,"74")}set("3843",1203,"74");set("3843",1204,"74");return s}
+const aptStructure = buildA52BLAptStructure();
+const getDongs = () => Object.keys(aptStructure).sort((a, b) => Number(a) - Number(b));
+const getHosByDong = (dong) => Object.keys(aptStructure[String(dong)] || {}).sort((a, b) => Number(a) - Number(b));
 const REGION_OPTIONS = ["없음", "경기", "서울", "인천", "강원", "충북", "충남", "세종", "대전", "전북", "경북", "대구", "경남", "울산", "부산", "전남", "광주", "제주"];
 const VEHICLE_COUNT = 3;
 let visibleVehicleCount = 1;
@@ -164,17 +172,35 @@ const addVehicleBtn = document.getElementById("addVehicleBtn");
 const submitBtn = document.getElementById("submitBtn");
 const resetBtn = document.getElementById("resetBtn");
 const statusEl = document.getElementById("status");
+const buildingNumberEl = document.getElementById("buildingNumber");
+const unitNumberEl = document.getElementById("unitNumber");
 function escapeHtml(value) {
   return String(value).replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;");
 }
 function formatPhone(value) {
   const digits = String(value || "").replace(/\D/g, "").slice(0, 11);
   if (digits.length < 4) return digits;
-  if (digits.length < 8) return `${digits.slice(0, 3)}-${digits.slice(3)}`;
-  return `${digits.slice(0, 3)}-${digits.slice(3, 7)}-${digits.slice(7)}`;
+  if (digits.length < 8) return 	`${digits.slice(0, 3)}-${digits.slice(3)}`;
+  return 	`${digits.slice(0, 3)}-${digits.slice(3, 7)}-${digits.slice(7)}`;
 }
 function isValidPhone(value) {
   return /^01\d-\d{3,4}-\d{4}$/.test(String(value || "").trim());
+}
+function renderBuildingOptions() {
+  const options = getDongs().map((dong) => `<option value="${dong}">${dong}동</option>`).join("");
+  buildingNumberEl.innerHTML = `<option value="">동 선택</option>${options}`;
+}
+function renderUnitOptions() {
+  const dong = buildingNumberEl.value;
+  unitNumberEl.value = "";
+  if (!dong) {
+    unitNumberEl.disabled = true;
+    unitNumberEl.innerHTML = '<option value="">호 선택</option>';
+    return;
+  }
+  const options = getHosByDong(dong).map((ho) => `<option value="${ho}">${ho}호</option>`).join("");
+  unitNumberEl.disabled = false;
+  unitNumberEl.innerHTML = `<option value="">호 선택</option>${options}`;
 }
 function getSubmissionId() {
   if (window.crypto && typeof window.crypto.randomUUID === "function") return window.crypto.randomUUID();
@@ -251,6 +277,8 @@ function buildVehicleBlock(index) {
   `;
 }
 vehicleBlocks.innerHTML = Array.from({ length: VEHICLE_COUNT }, (_, i) => buildVehicleBlock(i + 1)).join("");
+renderBuildingOptions();
+renderUnitOptions();
 function updateVehicleVisibility() {
   for (let index = 1; index <= VEHICLE_COUNT; index += 1) {
     const block = document.querySelector(`[data-vehicle-index="${index}"]`);
@@ -340,8 +368,8 @@ function hasVehicleData(vehicle) {
   return Boolean(vehicle.plate_middle || vehicle.plate_number || vehicle.car_name || vehicle.owner_name || vehicle.applicant_name || vehicle.applicant_phone || vehicle.ownership_type || vehicle.vehicle_tags.some((tag) => tag !== CATEGORY_NONE));
 }
 function resetForm() {
-  document.getElementById("buildingNumber").value = "";
-  document.getElementById("unitNumber").value = "";
+  buildingNumberEl.value = "";
+  renderUnitOptions();
   document.getElementById("memo").value = "";
   visibleVehicleCount = 1;
   updateVehicleVisibility();
@@ -474,6 +502,9 @@ async function handleSubmit() {
     updateVehicleVisibility();
   }
 }
+buildingNumberEl.addEventListener("change", () => {
+  renderUnitOptions();
+});
 addVehicleBtn.addEventListener("click", () => {
   if (visibleVehicleCount < VEHICLE_COUNT) {
     visibleVehicleCount += 1;
@@ -486,6 +517,9 @@ updateVehicleVisibility();
 </script>
 </body>
 </html>
+
+
+
 
 
 
