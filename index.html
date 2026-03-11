@@ -53,7 +53,7 @@ textarea{min-height:110px;resize:vertical}
 .vehicle-head{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:14px}
 .vehicle-head h3{margin:0;font-size:20px}
 .badge{display:inline-flex;align-items:center;min-height:30px;padding:6px 12px;border-radius:999px;background:#efe7d8;color:#6c5539;font-size:13px;font-weight:800}
-.plate-grid{display:grid;grid-template-columns:1.8fr 1.2fr;gap:12px}`r`n.plate-preview{margin-top:12px;padding:12px 14px;border:1px solid #e1d6c7;border-radius:16px;background:#f7f1e7}`r`n.plate-preview-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:10px}`r`n.plate-preview-item{padding:10px 12px;border-radius:12px;background:#fff;border:1px solid #d9cec0}`r`n.plate-preview-label{display:block;margin-bottom:4px;color:var(--sub);font-size:12px;font-weight:700}`r`n.plate-preview-value{display:block;min-height:22px;font-size:15px;font-weight:800;color:var(--ink)}
+.plate-grid{display:grid;grid-template-columns:1.2fr 1.1fr 1fr 1.8fr;gap:12px}
 .choice-group{display:flex;flex-wrap:wrap;gap:10px}
 .choice{position:relative}
 .choice input{position:absolute;opacity:0;pointer-events:none}
@@ -143,7 +143,7 @@ textarea{min-height:110px;resize:vertical}
           </details>
           <details>
             <summary>번호판 지역명이 없으면 어떻게 입력하나요?</summary>
-            <p>차량번호를 한 번에 입력하면 아래에 자동으로 구분되어 표시됩니다.</p>
+            <p>지역명 선택에서 <strong>없음</strong>을 고른 뒤 차량번호 앞부분과 뒷부분만 입력해 주세요.</p>
           </details>
           <details>
             <summary>가족명의 차량이나 렌트 차량도 등록 가능한가요?</summary>
@@ -193,7 +193,6 @@ const CATEGORY_INFO = {
   "장애인주차표지": "유효한 장애인주차표지가 있는 차량만 해당 구역을 이용할 수 있습니다."
 };
 const REGION_OPTIONS = ["없음", "경기", "서울", "인천", "강원", "충북", "충남", "세종", "대전", "전북", "경북", "대구", "경남", "울산", "부산", "전남", "광주", "제주"];
-const REGION_MATCH_OPTIONS = REGION_OPTIONS.filter((value) => value !== "없음").sort((a, b) => b.length - a.length);
 const VEHICLE_COUNT = 3;
 const vehicleBlocks = document.getElementById("vehicleBlocks");
 const submitBtn = document.getElementById("submitBtn");
@@ -211,32 +210,7 @@ function formatPhone(value) {
 function isValidPhone(value) {
   return /^01\d-\d{3,4}-\d{4}$/.test(String(value || "").trim());
 }
-function splitPlateNumber(value) {
-  const normalized = String(value || "").replace(/[\s-]/g, "").trim();
-  let region = "없음";
-  let remainder = normalized;
-  for (const option of REGION_MATCH_OPTIONS) {
-    if (remainder.startsWith(option)) {
-      region = option;
-      remainder = remainder.slice(option.length);
-      break;
-    }
-  }
-  const numberMatch = remainder.match(/(\d{4})$/);
-  const plateNumber = numberMatch ? numberMatch[1] : "";
-  const plateMiddle = plateNumber ? remainder.slice(0, -4) : remainder;
-  return {
-    plate_region: region,
-    plate_middle: plateMiddle.toUpperCase(),
-    plate_number: plateNumber
-  };
-}
-function syncPlateDisplay(index) {
-  const parsed = splitPlateNumber(document.getElementById(`plateFull${index}`).value);
-  document.getElementById(`regionView${index}`).textContent = parsed.plate_region || "없음";
-  document.getElementById(`midView${index}`).textContent = parsed.plate_middle || "-";
-  document.getElementById(`lastView${index}`).textContent = parsed.plate_number || "-";
-}function getSubmissionId() {
+function getSubmissionId() {
   if (window.crypto && typeof window.crypto.randomUUID === "function") return window.crypto.randomUUID();
   return `sub-${Date.now()}-${Math.random().toString(16).slice(2, 10)}`;
 }
@@ -267,32 +241,23 @@ function buildVehicleBlock(index) {
       </div>
       <div class="plate-grid">
         <div>
-          <label for="plateFull${index}">차량번호 전체 입력</label>
-          <input id="plateFull${index}" type="text" placeholder="예: 경기12가1234 또는 12가1234">
-          <div class="hint">차량번호를 한 번에 입력하면 아래에 지역명, 앞부분, 뒷부분이 자동으로 나뉘어 표시됩니다.</div>
-          <div class="plate-preview">
-            <strong>자동 분리 결과</strong>
-            <div class="plate-preview-grid">
-              <div class="plate-preview-item">
-                <span class="plate-preview-label">번호판 지역명</span>
-                <span id="regionView${index}" class="plate-preview-value">없음</span>
-              </div>
-              <div class="plate-preview-item">
-                <span class="plate-preview-label">차량번호 앞부분</span>
-                <span id="midView${index}" class="plate-preview-value">-</span>
-              </div>
-              <div class="plate-preview-item">
-                <span class="plate-preview-label">차량번호 뒷부분</span>
-                <span id="lastView${index}" class="plate-preview-value">-</span>
-              </div>
-            </div>
-          </div>
+          <label for="region${index}">번호판 지역명</label>
+          <select id="region${index}">${regionOptions}</select>
+        </div>
+        <div>
+          <label for="mid${index}">차량번호 앞부분</label>
+          <input id="mid${index}" type="text" placeholder="예: 12가">
+        </div>
+        <div>
+          <label for="last${index}">차량번호 뒷부분</label>
+          <input id="last${index}" type="text" inputmode="numeric" maxlength="4" placeholder="예: 1234">
         </div>
         <div>
           <label for="carName${index}">차명</label>
           <input id="carName${index}" type="text" placeholder="예: 아반떼, 모델3">
         </div>
       </div>
+      <div class="hint">번호판 지역명이 없다면 <strong>없음</strong>을 선택해 주세요.</div>
       <div class="grid" style="margin-top:14px">
         <div class="c4">
           <label for="ownerName${index}">소유자 성함</label>
@@ -371,24 +336,22 @@ for (let index = 1; index <= VEHICLE_COUNT; index += 1) {
       updateCategoryInfo(index);
     });
   });
-  document.getElementById(`plateFull${index}`).addEventListener("input", () => {
-    syncPlateDisplay(index);
+  document.getElementById(`last${index}`).addEventListener("input", (event) => {
+    event.target.value = event.target.value.replace(/\D/g, "").slice(0, 4);
   });
   document.getElementById(`applicantPhone${index}`).addEventListener("input", (event) => {
     event.target.value = formatPhone(event.target.value);
   });
-  syncPlateDisplay(index);
   updateCategoryInfo(index);
 }
 function getVehicleInput(index) {
-  const parsedPlate = splitPlateNumber(document.getElementById(`plateFull${index}`).value);
   return {
     car_order: index,
     applicant_name: document.getElementById(`applicantName${index}`).value.trim(),
     applicant_phone: formatPhone(document.getElementById(`applicantPhone${index}`).value),
-    plate_region: parsedPlate.plate_region,
-    plate_middle: parsedPlate.plate_middle,
-    plate_number: parsedPlate.plate_number,
+    plate_region: document.getElementById(`region${index}`).value.trim() || "없음",
+    plate_middle: document.getElementById(`mid${index}`).value.trim().toUpperCase(),
+    plate_number: document.getElementById(`last${index}`).value.replace(/\D/g, "").trim(),
     car_name: document.getElementById(`carName${index}`).value.trim(),
     owner_name: document.getElementById(`ownerName${index}`).value.trim(),
     ownership_type: getSelectedOwnership(index),
@@ -403,7 +366,9 @@ function resetForm() {
   document.getElementById("unitNumber").value = "";
   document.getElementById("memo").value = "";
   for (let index = 1; index <= VEHICLE_COUNT; index += 1) {
-    document.getElementById(`plateFull${index}`).value = "";
+    document.getElementById(`region${index}`).value = "없음";
+    document.getElementById(`mid${index}`).value = "";
+    document.getElementById(`last${index}`).value = "";
     document.getElementById(`carName${index}`).value = "";
     document.getElementById(`ownerName${index}`).value = "";
     document.getElementById(`applicantName${index}`).value = "";
@@ -412,7 +377,6 @@ function resetForm() {
     document.querySelectorAll(`[data-category-group="${index}"] input`).forEach((input) => { input.checked = input.value === CATEGORY_NONE; });
     document.getElementById(`ownershipInfo${index}`).hidden = true;
     document.getElementById(`ownershipInfo${index}`).textContent = "";
-    syncPlateDisplay(index);
     updateCategoryInfo(index);
   }
   setStatus("입력이 초기화되었습니다.", "info");
@@ -427,7 +391,7 @@ async function handleSubmit() {
   }
   const vehicles = Array.from({ length: VEHICLE_COUNT }, (_, i) => getVehicleInput(i + 1)).filter((vehicle, index) => index === 0 || hasVehicleData(vehicle));
   if (!vehicles[0].plate_middle || !vehicles[0].plate_number) {
-    setStatus("차량 1의 차량번호를 입력해 주세요.", "error");
+    setStatus("차량 1의 차량번호 앞부분과 뒷부분은 꼭 입력해 주세요.", "error");
     return;
   }
   const activeVehicles = vehicles.filter(hasVehicleData);
@@ -437,7 +401,7 @@ async function handleSubmit() {
   }
   for (const vehicle of activeVehicles) {
     if (!vehicle.plate_middle || !vehicle.plate_number) {
-      setStatus(`차량 ${vehicle.car_order}의 차량번호를 올바르게 입력해 주세요.`, "error");
+      setStatus(`차량 ${vehicle.car_order}의 차량번호 앞부분과 뒷부분을 모두 입력해 주세요.`, "error");
       return;
     }
     if (!vehicle.owner_name) {
@@ -532,10 +496,6 @@ resetBtn.addEventListener("click", resetForm);
 </script>
 </body>
 </html>
-
-
-
-
 
 
 
