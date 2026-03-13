@@ -1,0 +1,542 @@
+﻿<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>입주민 차량등록 신청</title>
+<style>
+:root{
+  --paper:#fffdf8;
+  --ink:#20333a;
+  --sub:#5f7178;
+  --line:#d4cbbd;
+  --accent:#1f6f78;
+  --accent-strong:#155057;
+  --ok:#1f7a52;
+  --shadow:0 20px 60px rgba(44, 42, 34, 0.08);
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  color:var(--ink);
+  background:
+    radial-gradient(circle at top left, rgba(31,111,120,.14), transparent 28%),
+    radial-gradient(circle at top right, rgba(180,90,54,.10), transparent 22%),
+    linear-gradient(180deg, #f7f3ec 0%, #efe8dc 100%);
+  font-family:"Malgun Gothic","Noto Sans KR",sans-serif;
+}
+.toplink{display:inline-flex;margin-bottom:14px;color:var(--accent-strong);text-decoration:none;font-weight:700}
+.shell{max-width:920px;margin:0 auto;padding:28px 16px 56px}
+.hero{background:linear-gradient(135deg, rgba(255,253,248,.95), rgba(243,250,250,.88));border:1px solid rgba(212,203,189,.8);border-radius:28px;padding:24px;box-shadow:var(--shadow)}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;padding:8px 14px;border-radius:999px;background:#f3ebe0;color:#6c5539;font-size:13px;font-weight:700}
+h1{margin:16px 0 8px;font-size:clamp(30px, 4vw, 48px);line-height:1.08;letter-spacing:-0.03em}
+.lead{margin:0;color:var(--sub);font-size:16px;line-height:1.7}
+.panel{margin-top:18px;background:var(--paper);border:1px solid rgba(212,203,189,.9);border-radius:24px;box-shadow:var(--shadow);padding:22px}
+.section+.section{margin-top:22px}
+.section-title{margin:0 0 12px;font-size:22px}
+.section-copy{margin:0 0 14px;color:var(--sub);line-height:1.65}
+.grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:14px}
+.c4{grid-column:span 4}.c6{grid-column:span 6}.c12{grid-column:span 12}
+label{display:block;margin:0 0 8px;font-size:14px;font-weight:800}
+.hint{margin-top:8px;color:var(--sub);font-size:13px;line-height:1.5}
+input,select,textarea{width:100%;border:1px solid #cfc4b5;border-radius:14px;background:#fff;color:var(--ink);padding:13px 14px;font-size:15px;font:inherit}
+input:focus,select:focus,textarea:focus{outline:2px solid rgba(31,111,120,.18);border-color:var(--accent)}
+textarea{min-height:96px;resize:vertical}
+.vehicle-list{display:grid;gap:14px}
+.vehicle-block{border:1px solid #ddd2c2;border-radius:22px;background:linear-gradient(180deg, rgba(255,255,255,.96), rgba(249,246,239,.94));padding:18px}
+.vehicle-block[hidden]{display:none!important}
+.vehicle-head{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+.vehicle-head h3{margin:0;font-size:20px}
+.badge{display:inline-flex;align-items:center;min-height:30px;padding:6px 12px;border-radius:999px;background:#efe7d8;color:#6c5539;font-size:13px;font-weight:800}
+.plate-grid{display:grid;grid-template-columns:1.2fr 1.1fr 1fr 1.8fr;gap:12px}
+.choice-group{display:flex;flex-wrap:wrap;gap:10px}
+.choice{position:relative}
+.choice input{position:absolute;opacity:0;pointer-events:none}
+.choice span{display:inline-flex;align-items:center;justify-content:center;min-height:42px;padding:10px 14px;border:1px solid #bfd0d2;border-radius:999px;background:#fff;color:#32555a;font-size:14px;font-weight:700;cursor:pointer;transition:.16s ease}
+.choice input:checked+span{background:var(--accent);border-color:var(--accent);color:#fff;transform:translateY(-1px)}
+.choice-note{margin-top:10px;border-left:4px solid #ceb37a;padding:10px 12px;border-radius:10px;background:#fff7e4;color:#6b5324;font-size:13px;line-height:1.55}
+.choice-note-stack{display:grid;gap:10px;margin-top:10px}
+.choice-note-stack .choice-note{margin-top:0}
+.actions{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-top:22px}
+.btn{border:0;border-radius:16px;padding:14px 22px;font:inherit;font-size:15px;font-weight:800;cursor:pointer}
+.btn.primary{background:linear-gradient(135deg, var(--accent), var(--accent-strong));color:#fff;box-shadow:0 14px 28px rgba(31,111,120,.22)}
+.btn.ghost{background:#f0ebe1;color:#4f646a}.btn:disabled{opacity:.6;cursor:not-allowed;box-shadow:none}
+.status{min-height:26px;margin-top:16px;font-size:14px;font-weight:700}.status.error{color:#a1402c}.status.success{color:var(--ok)}.status.info{color:var(--accent)}
+.faq{margin-top:24px}.faq details{border-top:1px solid #e1d7c8;padding:14px 0}.faq details:last-child{border-bottom:1px solid #e1d7c8}.faq summary{cursor:pointer;font-weight:800;list-style:none}.faq summary::-webkit-details-marker{display:none}.faq p{margin:10px 0 0;color:var(--sub);line-height:1.65}
+.simple-note{margin-top:18px;color:var(--sub);font-size:13px;line-height:1.6}
+@media (max-width:720px){
+  .grid,.plate-grid{grid-template-columns:1fr}
+  .c4,.c6,.c12{grid-column:span 1}
+  .shell{padding:18px 14px 42px}
+  .hero,.panel{padding:18px}
+}
+</style>
+</head>
+<body>
+  <div class="shell">
+    <a href="./index.html" class="toplink">← 신청 유형 선택으로 돌아가기</a>
+    <section class="hero">
+      <span class="eyebrow">차량등록 입력 전용 페이지</span>
+      <h1>입주민 차량등록 신청</h1>
+      <p class="lead">본 페이지의 신청은 차량등록 접수를 위한 사전 입력입니다. 실제 차량등록은 구비서류를 지참하여 관리사무소 방문 후 직원 안내에 따라 진행해 주세요.</p>
+      <p class="lead">차량등록 절차: 신청서 입력 > 구비서류 확인 > 차량등록카드(스티커) 발급 > 시스템 등록</p>
+    </section>
+
+    <main class="panel">
+      <section class="section">
+        <h2 class="section-title">세대 정보</h2>
+        <div class="grid">
+          <div class="c6">
+            <label for="buildingNumber">동</label>
+            <select id="buildingNumber">
+              <option value="">동 선택</option>
+            </select>
+          </div>
+          <div class="c6">
+            <label for="unitNumber">호</label>
+            <select id="unitNumber" disabled>
+              <option value="">호 선택</option>
+            </select>
+          </div>
+          <div class="c12">
+            <label for="memo">메모</label>
+            <textarea id="memo" placeholder="관리자에게 전달할 메모가 있으면 입력해 주세요."></textarea>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2 class="section-title">차량 정보</h2>
+        <div id="vehicleBlocks" class="vehicle-list"></div>
+        <div class="actions">
+          <button id="addVehicleBtn" class="btn ghost" type="button">+ 차량 추가</button>
+        </div>
+        <p class="simple-note">한 세대당 차량 최대 3대까지 신청할 수 있습니다. (1대: 무료, 2대: 월 3만원, 3대: 월 20만원)</p>
+      </section>
+
+      <section class="section">
+        <h2 class="section-title">제출</h2>
+        <div class="actions">
+          <button id="submitBtn" class="btn primary" type="button">신청서 제출</button>
+          <button id="resetBtn" class="btn ghost" type="button">입력 초기화</button>
+        </div>
+        <div id="status" class="status info">아직 제출 전입니다.</div>
+        <p class="simple-note">이미 등록된 차량번호는 제출되지 않습니다. 제출 후 수정이 필요하면 관리자에게 문의해 주세요.</p>
+      </section>
+
+      <section class="section faq">
+        <h2 class="section-title">안내</h2>
+        <details open>
+          <summary>제출 후 수정은 어떻게 하나요?</summary>
+          <p>현재는 입력 전용 페이지입니다. 제출 후 수정이나 확인은 관리자에게 문의해 주세요.</p>
+        </details>
+        <details>
+          <summary>보유형태별 제출서류는 무엇인가요?</summary>
+          <p>본인명의, 가족명의, 렌트, 회사차량은 선택 후 아래에 필요한 제출서류 안내가 표시됩니다. 해당 안내를 기준으로 관리자 요청 서류를 준비해 주세요.</p>
+        </details>
+        <details>
+          <summary>번호판 지역명이 없으면 어떻게 입력하나요?</summary>
+          <p>번호판 지역명이 없다면 <strong>없음</strong>을 선택하고, 차량번호 앞부분과 뒷부분을 입력해 주세요.</p>
+        </details>
+      </section>
+    </main>
+  </div>
+<script>
+"use strict";
+const SUPABASE_URL = "https://qjaqbvytoyqysdlfywbm.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFqYXFidnl0b3lxeXNkbGZ5d2JtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMxNzA0NTMsImV4cCI6MjA4ODc0NjQ1M30.GMiLAzShrjCVT5k3GcyUodfndEobwHvpwWp-PtxrN0Y";
+const TABLE_NAME = "car_registrations";
+const OWNERSHIP_OPTIONS = ["본인명의", "가족명의", "렌트", "회사차량"];
+const OWNERSHIP_INFO = {
+  "본인명의": "제출서류: 자동차등록증, 실거주 확인 서류 등 관리자 안내 기준으로 준비해 주세요.",
+  "가족명의": "제출서류: 가족관계 확인 서류와 실거주 확인 서류가 필요할 수 있습니다.",
+  "렌트": "제출서류: 렌트 또는 리스 계약서가 필요할 수 있습니다.",
+  "회사차량": "제출서류: 재직증명 또는 회사차량 확인 서류가 필요할 수 있습니다."
+};
+const CATEGORY_NONE = "해당사항 없음";
+const CATEGORY_OPTIONS = [CATEGORY_NONE, "전기차", "경차", "대형", "장애인주차표지"];
+const CATEGORY_EXCLUSIVE = { "경차": "대형", "대형": "경차" };
+const CATEGORY_INFO = {
+  "전기차": "전기차 충전시설 이용을 위해 관리사무소에서 세대 카드에 차량 정보를 등록해야 합니다. (업체 변경 시 달라질 수 있습니다.)",
+  "경차": "경차는 경차 전용구역에 주차해야 하며, 이를 3회 이상 위반할 경우 월 1만 원의 주차료 할인 혜택이 영구 박탈됩니다.",
+  "대형": "높이 2.7m 초과 차량과 캠핑카, 카라반, 트레일러, 장의차는 단지 내 주차 등록 및 진입이 불가합니다.",
+  "장애인주차표지": "유효한 장애인 주차표지를 부착한 차량만 전용구역을 이용할 수 있으며, 미부착 차량이 주차할 경우 즉시 단속됩니다."
+};
+function buildA52BLAptStructure(){const s={};const ensure=d=>(s[d]??={});const set=(d,h,t)=>{ensure(String(d))[String(h)]=t};const addFloors=(d,ff,ft,lines,by,ex=[])=>{const e=new Set(ex.map(String));for(let f=ff;f<=ft;f++){for(const ln of lines){const ho=String(f*100+ln);if(e.has(ho))continue;const t=by[ln];if(!t)continue;set(d,ho,t)}}};addFloors("3831",1,10,[1,2,3,4],{1:"97A",2:"97A",3:"97A",4:"97A"},["102","202"]);addFloors("3831",11,13,[3,4],{3:"97A",4:"97A"});addFloors("3832",1,11,[1,2,3,4],{1:"97A",2:"97A",3:"97A",4:"97A"});addFloors("3832",12,14,[3,4],{3:"97A",4:"97A"});for(let f=1;f<=11;f++){set("3833",f*100+1,"74");set("3833",f*100+2,"74");set("3833",f*100+3,"84A");set("3833",f*100+4,"84A")}set("3833",1203,"84A");set("3833",1204,"84A");set("3833",1303,"110P2");set("3834",102,"84B");for(let f=2;f<=20;f++){set("3834",f*100+1,"84B");set("3834",f*100+2,"84B");set("3834",f*100+3,"97B")}for(let f=1;f<=20;f++){set("3835",f*100+1,"84B");set("3835",f*100+2,"84B");set("3835",f*100+3,"97B")}for(let f=3;f<=19;f++){set("3836",f*100+1,"84B");set("3836",f*100+2,"84B");set("3836",f*100+3,"97B")}set("3836",102,"84B");set("3836",201,"84B");set("3836",202,"84B");set("3836",203,"97B");set("3836",2001,"110P1");for(let f=1;f<=20;f++){set("3837",f*100+1,"84B");set("3837",f*100+2,"84B");set("3837",f*100+3,"97B")}for(let f=3;f<=19;f++){set("3838",f*100+1,"84B");set("3838",f*100+2,"84B");set("3838",f*100+3,"97B")}set("3838",102,"84B");set("3838",201,"84B");set("3838",202,"84B");set("3838",203,"97B");set("3838",2001,"110P1");for(let f=1;f<=20;f++){set("3839",f*100+1,"84B");set("3839",f*100+2,"84B");set("3839",f*100+3,"97B")}delete s["3839"]["102"];addFloors("3840",1,14,[1,2,3,4],{1:"84A",2:"84A",3:"84A",4:"84A"},["1401","1402"]);set("3840",1503,"84A");set("3840",1504,"84A");addFloors("3841",1,14,[1,2,3,4],{1:"84A",2:"84A",3:"84A",4:"84A"});set("3841",1501,"84A");set("3841",1502,"84A");set("3841",1503,"84A");set("3841",1504,"84A");addFloors("3842",1,13,[1,2],{1:"84A",2:"84A"});set("3842",1401,"110P2");for(let f=1;f<=11;f++){set("3843",f*100+1,"110A");set("3843",f*100+2,"84B");set("3843",f*100+3,"74");set("3843",f*100+4,"74")}set("3843",1203,"74");set("3843",1204,"74");return s}
+const aptStructure = buildA52BLAptStructure();
+const getDongs = () => Object.keys(aptStructure).sort((a, b) => Number(a) - Number(b));
+const getHosByDong = (dong) => Object.keys(aptStructure[String(dong)] || {}).sort((a, b) => Number(a) - Number(b));
+const REGION_OPTIONS = ["없음", "경기", "서울", "인천", "강원", "충북", "충남", "세종", "대전", "전북", "경북", "대구", "경남", "울산", "부산", "전남", "광주", "제주"];
+const VEHICLE_COUNT = 3;
+let visibleVehicleCount = 1;
+const vehicleBlocks = document.getElementById("vehicleBlocks");
+const addVehicleBtn = document.getElementById("addVehicleBtn");
+const submitBtn = document.getElementById("submitBtn");
+const resetBtn = document.getElementById("resetBtn");
+const statusEl = document.getElementById("status");
+const buildingNumberEl = document.getElementById("buildingNumber");
+const unitNumberEl = document.getElementById("unitNumber");
+function escapeHtml(value) {
+  return String(value).replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;");
+}
+function formatPhone(value) {
+  const digits = String(value || "").replace(/\D/g, "").slice(0, 11);
+  if (digits.length < 4) return digits;
+  if (digits.length < 8) return 	`${digits.slice(0, 3)}-${digits.slice(3)}`;
+  return 	`${digits.slice(0, 3)}-${digits.slice(3, 7)}-${digits.slice(7)}`;
+}
+function isValidPhone(value) {
+  return /^01\d-\d{3,4}-\d{4}$/.test(String(value || "").trim());
+}
+function renderBuildingOptions() {
+  const options = getDongs().map((dong) => `<option value="${dong}">${dong}동</option>`).join("");
+  buildingNumberEl.innerHTML = `<option value="">동 선택</option>${options}`;
+}
+function renderUnitOptions() {
+  const dong = buildingNumberEl.value;
+  unitNumberEl.value = "";
+  if (!dong) {
+    unitNumberEl.disabled = true;
+    unitNumberEl.innerHTML = '<option value="">호 선택</option>';
+    return;
+  }
+  const options = getHosByDong(dong).map((ho) => `<option value="${ho}">${ho}호</option>`).join("");
+  unitNumberEl.disabled = false;
+  unitNumberEl.innerHTML = `<option value="">호 선택</option>${options}`;
+}
+function getSubmissionId() {
+  if (window.crypto && typeof window.crypto.randomUUID === "function") return window.crypto.randomUUID();
+  return `sub-${Date.now()}-${Math.random().toString(16).slice(2, 10)}`;
+}
+function setStatus(message, type) {
+  statusEl.textContent = message;
+  statusEl.className = `status ${type}`;
+}
+function buildVehicleBlock(index) {
+  const requiredBadge = index === 1 ? "필수 입력" : "선택 입력";
+  const regionOptions = REGION_OPTIONS.map((region) => `<option value="${escapeHtml(region)}">${escapeHtml(region)}</option>`).join("");
+  const ownershipOptions = OWNERSHIP_OPTIONS.map((label) => `
+    <label class="choice">
+      <input type="radio" name="ownership${index}" value="${escapeHtml(label)}">
+      <span>${escapeHtml(label)}</span>
+    </label>
+  `).join("");
+  const categoryOptions = CATEGORY_OPTIONS.map((label) => `
+    <label class="choice">
+      <input type="checkbox" name="category${index}" value="${escapeHtml(label)}" ${label === CATEGORY_NONE ? "checked" : ""}>
+      <span>${escapeHtml(label)}</span>
+    </label>
+  `).join("");
+  return `
+    <section class="vehicle-block" data-vehicle-index="${index}" ${index > 1 ? "hidden" : ""}>
+      <div class="vehicle-head">
+        <h3>차량 ${index}</h3>
+        <span class="badge">${requiredBadge}</span>
+      </div>
+      <div class="plate-grid">
+        <div>
+          <label for="region${index}">번호판 지역명</label>
+          <select id="region${index}">${regionOptions}</select>
+        </div>
+        <div>
+          <label for="mid${index}">차량번호 앞부분</label>
+          <input id="mid${index}" type="text" placeholder="예: 12가">
+        </div>
+        <div>
+          <label for="last${index}">차량번호 뒷부분</label>
+          <input id="last${index}" type="text" inputmode="numeric" maxlength="4" placeholder="예: 1234">
+        </div>
+        <div>
+          <label for="carName${index}">차명</label>
+          <input id="carName${index}" type="text" placeholder="예: 아반떼, 모델3">
+        </div>
+      </div>
+      <div class="hint">번호판 지역명이 없다면 <strong>없음</strong>을 선택해 주세요.</div>
+      <div class="grid" style="margin-top:14px">
+        <div class="c4">
+          <label for="ownerName${index}">소유자 성함</label>
+          <input id="ownerName${index}" type="text" placeholder="예: 홍길동">
+        </div>
+        <div class="c4">
+          <label for="applicantName${index}">신청인 성함(차량 사용자)</label>
+          <input id="applicantName${index}" type="text" placeholder="예: 홍길동">
+        </div>
+        <div class="c4">
+          <label for="applicantPhone${index}">신청인 연락처(차량 사용자)</label>
+          <input id="applicantPhone${index}" type="text" inputmode="numeric" maxlength="13" placeholder="예: 010-1234-5678">
+        </div>
+        <div class="c6">
+          <label>보유형태</label>
+          <div class="choice-group" data-ownership-group="${index}">${ownershipOptions}</div>
+          <div id="ownershipInfo${index}" class="choice-note" hidden></div>
+        </div>
+        <div class="c6">
+          <label>차량구분 (중복 선택 가능)</label>          <div class="choice-group" data-category-group="${index}">${categoryOptions}</div>
+          <div id="categoryInfo${index}" class="choice-note-stack" hidden></div>
+        </div>
+        <div class="c12">
+          <label class="choice">
+            <input id="householdNotice${index}" type="checkbox">
+            <span>세대알림 (선택 시 차량 출입 시 세대 알림)</span>
+          </label>
+        </div>
+      </div>
+    </section>
+  `;
+}
+vehicleBlocks.innerHTML = Array.from({ length: VEHICLE_COUNT }, (_, i) => buildVehicleBlock(i + 1)).join("");
+renderBuildingOptions();
+renderUnitOptions();
+function updateVehicleVisibility() {
+  for (let index = 1; index <= VEHICLE_COUNT; index += 1) {
+    const block = document.querySelector(`[data-vehicle-index="${index}"]`);
+    block.hidden = index > visibleVehicleCount;
+  }
+  addVehicleBtn.hidden = visibleVehicleCount >= VEHICLE_COUNT;
+}
+function getSelectedOwnership(index) {
+  const checked = document.querySelector(`[data-ownership-group="${index}"] input:checked`);
+  return checked ? checked.value : "";
+}
+function getSelectedCategories(index) {
+  return Array.from(document.querySelectorAll(`[data-category-group="${index}"] input:checked`)).map((input) => input.value);
+}
+function normalizeCategories(index, toggledValue) {
+  const inputs = Array.from(document.querySelectorAll(`[data-category-group="${index}"] input`));
+  const noneInput = inputs.find((input) => input.value === CATEGORY_NONE);
+  const otherInputs = inputs.filter((input) => input.value !== CATEGORY_NONE);
+  if (toggledValue === CATEGORY_NONE && noneInput.checked) otherInputs.forEach((input) => { input.checked = false; });
+  if (toggledValue !== CATEGORY_NONE) {
+    const toggledInput = inputs.find((input) => input.value === toggledValue);
+    const exclusiveValue = CATEGORY_EXCLUSIVE[toggledValue];
+    if (toggledInput && toggledInput.checked && exclusiveValue) {
+      const exclusiveInput = inputs.find((input) => input.value === exclusiveValue);
+      if (exclusiveInput) exclusiveInput.checked = false;
+    }
+    const anyOtherChecked = otherInputs.some((input) => input.checked);
+    if (anyOtherChecked) noneInput.checked = false;
+    if (!anyOtherChecked) noneInput.checked = true;
+  }
+}
+function updateCategoryInfo(index) {
+  const selected = getSelectedCategories(index);
+  const notes = selected.filter((value) => value !== CATEGORY_NONE).map((value) => CATEGORY_INFO[value]).filter(Boolean);
+  const info = document.getElementById(`categoryInfo${index}`);
+  if (!notes.length) {
+    info.hidden = true;
+    info.innerHTML = "";
+    return;
+  }
+  info.hidden = false;
+  info.innerHTML = notes.map((note) => `<div class="choice-note">${escapeHtml(note)}</div>`).join("");
+}
+for (let index = 1; index <= VEHICLE_COUNT; index += 1) {
+  document.querySelectorAll(`[data-ownership-group="${index}"] input`).forEach((input) => {
+    input.addEventListener("change", () => {
+      const info = document.getElementById(`ownershipInfo${index}`);
+      const selected = getSelectedOwnership(index);
+      if (!selected) {
+        info.hidden = true;
+        info.textContent = "";
+        return;
+      }
+      info.hidden = false;
+      info.textContent = OWNERSHIP_INFO[selected] || "";
+    });
+  });
+  document.querySelectorAll(`[data-category-group="${index}"] input`).forEach((input) => {
+    input.addEventListener("change", (event) => {
+      normalizeCategories(index, event.target.value);
+      updateCategoryInfo(index);
+    });
+  });
+  document.getElementById(`last${index}`).addEventListener("input", (event) => {
+    event.target.value = event.target.value.replace(/\D/g, "").slice(0, 4);
+  });
+  document.getElementById(`applicantPhone${index}`).addEventListener("input", (event) => {
+    event.target.value = formatPhone(event.target.value);
+  });
+  updateCategoryInfo(index);
+}
+function getVehicleInput(index) {
+  return {
+    car_order: index,
+    applicant_name: document.getElementById(`applicantName${index}`).value.trim(),
+    applicant_phone: formatPhone(document.getElementById(`applicantPhone${index}`).value),
+    plate_region: document.getElementById(`region${index}`).value.trim() || "없음",
+    plate_middle: document.getElementById(`mid${index}`).value.trim().toUpperCase(),
+    plate_number: document.getElementById(`last${index}`).value.replace(/\D/g, "").trim(),
+    car_name: document.getElementById(`carName${index}`).value.trim(),
+    owner_name: document.getElementById(`ownerName${index}`).value.trim(),
+    ownership_type: getSelectedOwnership(index),
+    vehicle_tags: getSelectedCategories(index),
+    household_notice: document.getElementById(`householdNotice${index}`).checked
+  };
+}
+function hasVehicleData(vehicle) {
+  return Boolean(vehicle.plate_middle || vehicle.plate_number || vehicle.car_name || vehicle.owner_name || vehicle.applicant_name || vehicle.applicant_phone || vehicle.ownership_type || vehicle.vehicle_tags.some((tag) => tag !== CATEGORY_NONE));
+}
+function resetForm() {
+  buildingNumberEl.value = "";
+  renderUnitOptions();
+  document.getElementById("memo").value = "";
+  visibleVehicleCount = 1;
+  updateVehicleVisibility();
+  for (let index = 1; index <= VEHICLE_COUNT; index += 1) {
+    document.getElementById(`region${index}`).value = "없음";
+    document.getElementById(`mid${index}`).value = "";
+    document.getElementById(`last${index}`).value = "";
+    document.getElementById(`carName${index}`).value = "";
+    document.getElementById(`ownerName${index}`).value = "";
+    document.getElementById(`applicantName${index}`).value = "";
+    document.getElementById(`applicantPhone${index}`).value = "";
+    document.getElementById(`householdNotice${index}`).checked = false;
+    document.querySelectorAll(`[data-ownership-group="${index}"] input`).forEach((input) => { input.checked = false; });
+    document.querySelectorAll(`[data-category-group="${index}"] input`).forEach((input) => { input.checked = input.value === CATEGORY_NONE; });
+    document.getElementById(`ownershipInfo${index}`).hidden = true;
+    document.getElementById(`ownershipInfo${index}`).textContent = "";
+    updateCategoryInfo(index);
+  }
+  setStatus("입력이 초기화되었습니다.", "info");
+}
+async function handleSubmit() {
+  const buildingNumber = document.getElementById("buildingNumber").value.trim();
+  const unitNumber = document.getElementById("unitNumber").value.trim();
+  const memo = document.getElementById("memo").value.trim();
+  if (!buildingNumber || !unitNumber) {
+    setStatus("동과 호는 꼭 입력해 주세요.", "error");
+    return;
+  }
+  const vehicles = Array.from({ length: visibleVehicleCount }, (_, i) => getVehicleInput(i + 1)).filter((vehicle, index) => index === 0 || hasVehicleData(vehicle));
+  if (!vehicles[0].plate_middle || !vehicles[0].plate_number) {
+    setStatus("차량 1의 차량번호 앞부분과 뒷부분은 꼭 입력해 주세요.", "error");
+    return;
+  }
+  const activeVehicles = vehicles.filter(hasVehicleData);
+  if (!activeVehicles.length) {
+    setStatus("최소 1대 이상의 차량정보를 입력해 주세요.", "error");
+    return;
+  }
+  for (const vehicle of activeVehicles) {
+    if (!vehicle.plate_middle || !vehicle.plate_number) {
+      setStatus(`차량 ${vehicle.car_order}의 차량번호 앞부분과 뒷부분을 모두 입력해 주세요.`, "error");
+      return;
+    }
+    if (!vehicle.owner_name) {
+      setStatus(`차량 ${vehicle.car_order}의 소유자 성함을 입력해 주세요.`, "error");
+      return;
+    }
+    if (!vehicle.applicant_name) {
+      setStatus(`차량 ${vehicle.car_order}의 신청인 성함(차량 사용자)을 입력해 주세요.`, "error");
+      return;
+    }
+    if (!vehicle.applicant_phone) {
+      setStatus(`차량 ${vehicle.car_order}의 신청인 연락처(차량 사용자)을 입력해 주세요.`, "error");
+      return;
+    }
+    if (!isValidPhone(vehicle.applicant_phone)) {
+      setStatus(`차량 ${vehicle.car_order}의 신청인 연락처를 010-1234-5678 형식으로 입력해 주세요.`, "error");
+      return;
+    }
+    if (!vehicle.ownership_type) {
+      setStatus(`차량 ${vehicle.car_order}의 보유형태를 선택해 주세요.`, "error");
+      return;
+    }
+    if (!vehicle.vehicle_tags.length) {
+      setStatus(`차량 ${vehicle.car_order}의 차량구분을 선택해 주세요.`, "error");
+      return;
+    }
+  }
+  const duplicateCheck = new Set();
+  for (const vehicle of activeVehicles) {
+    const carNumberKey = `${vehicle.plate_region}|${vehicle.plate_middle}|${vehicle.plate_number}`;
+    if (duplicateCheck.has(carNumberKey)) {
+      setStatus("같은 신청서 안에 동일한 차량번호를 두 번 입력할 수 없습니다.", "error");
+      return;
+    }
+    duplicateCheck.add(carNumberKey);
+  }
+  if (SUPABASE_URL.includes("여기에_") || SUPABASE_ANON_KEY.includes("여기에_")) {
+    setStatus("먼저 코드 안의 SUPABASE_URL과 SUPABASE_ANON_KEY를 실제 값으로 바꿔 주세요.", "error");
+    return;
+  }
+  const submissionId = getSubmissionId();
+  const rows = activeVehicles.map((vehicle) => ({
+    submission_id: submissionId,
+    building_number: buildingNumber,
+    unit_number: unitNumber,
+    plate_region: vehicle.plate_region || "없음",
+    plate_middle: vehicle.plate_middle,
+    plate_number: vehicle.plate_number,
+    car_name: vehicle.car_name || null,
+    owner_name: vehicle.owner_name,
+    applicant_name: vehicle.applicant_name,
+    applicant_phone: vehicle.applicant_phone,
+    ownership_type: vehicle.ownership_type,
+    vehicle_tags: vehicle.vehicle_tags,
+    household_notice: vehicle.household_notice,
+    memo: memo || null,
+    car_order: vehicle.car_order
+  }));
+  submitBtn.disabled = true;
+  resetBtn.disabled = true;
+  addVehicleBtn.disabled = true;
+  setStatus("제출 중입니다. 잠시만 기다려 주세요.", "info");
+  try {
+    const response = await fetch(`${SUPABASE_URL}/rest/v1/${TABLE_NAME}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "apikey": SUPABASE_ANON_KEY,
+        "Authorization": `Bearer ${SUPABASE_ANON_KEY}`,
+        "Prefer": "return=minimal"
+      },
+      body: JSON.stringify(rows)
+    });
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok) {
+      if (data && (data.code === "23505" || String(data.message || "").includes("duplicate"))) {
+        setStatus("이미 등록된 차량번호가 있어 제출되지 않았습니다.", "error");
+      } else {
+        setStatus(`제출에 실패했습니다. ${data.message || "Supabase 설정을 다시 확인해 주세요."}`, "error");
+      }
+      return;
+    }
+    resetForm();
+    setStatus(`제출이 완료되었습니다. 저장된 차량 수: ${rows.length}대`, "success");
+  } catch (error) {
+    setStatus(`오류가 발생했습니다. ${error.message}`, "error");
+  } finally {
+    submitBtn.disabled = false;
+    resetBtn.disabled = false;
+    addVehicleBtn.disabled = false;
+    updateVehicleVisibility();
+  }
+}
+buildingNumberEl.addEventListener("change", () => {
+  renderUnitOptions();
+});
+addVehicleBtn.addEventListener("click", () => {
+  if (visibleVehicleCount < VEHICLE_COUNT) {
+    visibleVehicleCount += 1;
+    updateVehicleVisibility();
+  }
+});
+submitBtn.addEventListener("click", handleSubmit);
+resetBtn.addEventListener("click", resetForm);
+updateVehicleVisibility();
+</script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
