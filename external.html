@@ -124,17 +124,32 @@ input[type="text"],select{
   flex-wrap:wrap;
   gap:10px;
 }
-.choice{
+.choice{position:relative}
+.choice input{
+  position:absolute;
+  opacity:0;
+  pointer-events:none;
+}
+.choice span{
   display:inline-flex;
   align-items:center;
-  gap:8px;
+  justify-content:center;
   min-height:44px;
   padding:10px 14px;
   border:1px solid var(--line);
   border-radius:999px;
   background:#fff;
+  color:var(--ink);
+  font-weight:700;
+  cursor:pointer;
+  transition:.16s ease;
 }
-.choice input{margin:0}
+.choice input:checked+span{
+  background:var(--accent);
+  border-color:var(--accent);
+  color:#fff;
+  transform:translateY(-1px);
+}
 .section-title{
   margin:28px 0 14px;
   font-size:20px;
@@ -166,6 +181,18 @@ input[type="text"],select{
   font-size:13px;
   line-height:1.6;
 }
+.inline-note{
+  display:none;
+  margin-top:10px;
+  padding:12px 14px;
+  border-left:4px solid #ceb37a;
+  border-radius:10px;
+  background:#fff7e4;
+  color:#6b5324;
+  font-size:13px;
+  line-height:1.55;
+}
+.inline-note.show{display:block}
 .btn-row{
   display:flex;
   flex-wrap:wrap;
@@ -309,7 +336,7 @@ function buildVehicleBlock(index){
   const regionOptions = REGION_OPTIONS.map((region) => `<option value="${escapeHtml(region)}">${escapeHtml(region)}</option>`).join("");
   const accessZoneOptions = ACCESS_ZONE_OPTIONS.map((zone) => `
     <label class="choice">
-      <input type="checkbox" name="accessZone${index}" value="${escapeHtml(zone)}">
+      <input type="checkbox" name="accessZone${index}" value="${escapeHtml(zone)}" checked>
       <span>${escapeHtml(zone)}</span>
     </label>
   `).join("");
@@ -358,6 +385,7 @@ function buildVehicleBlock(index){
             <input id="masterKeyRequested${index}" type="checkbox">
             <span>\uB9C8\uC2A4\uD130\uD0A4 \uBC1C\uAE09</span>
           </label>
+          <div id="masterKeyNote${index}" class="inline-note">\uACF5\uB3D9\uD604\uAD00 \uB9C8\uC2A4\uD130\uD0A4 \uBC1C\uAE09\uC740 \uD0DD\uBC30, \uBC30\uC1A1\uCC28\uB7C9\uB9CC \uAC00\uB2A5\uD558\uBA70 \uBC1C\uAE09\uC2DC \uBCF4\uC99D\uAE08\uC744 \uC785\uAE08\uD558\uC154\uC57C \uD569\uB2C8\uB2E4.</div>
         </div>
       </div>
     </section>
@@ -367,9 +395,18 @@ function attachVehicleBehaviors(index){
   const phoneEl = document.getElementById(`applicantPhone${index}`);
   const midEl = document.getElementById(`mid${index}`);
   const lastEl = document.getElementById(`last${index}`);
+  const masterKeyEl = document.getElementById(`masterKeyRequested${index}`);
   if (phoneEl) phoneEl.addEventListener("input", (event) => { event.target.value = formatPhone(event.target.value); });
   if (midEl) midEl.addEventListener("input", (event) => { event.target.value = String(event.target.value || "").replace(/\s/g,"").toUpperCase(); });
   if (lastEl) lastEl.addEventListener("input", (event) => { event.target.value = String(event.target.value || "").replace(/\D/g,"").slice(0,4); });
+  if (masterKeyEl) {
+    const syncMasterKeyNote = () => {
+      const noteEl = document.getElementById(`masterKeyNote${index}`);
+      if (noteEl) noteEl.classList.toggle("show", masterKeyEl.checked);
+    };
+    masterKeyEl.addEventListener("change", syncMasterKeyNote);
+    syncMasterKeyNote();
+  }
   const removeBtn = document.querySelector(`[data-remove-vehicle="${index}"]`);
   if (removeBtn) {
     removeBtn.addEventListener("click", () => {

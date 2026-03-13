@@ -275,10 +275,12 @@ function buildVehicleBlock(index) {
           <div id="categoryInfo${index}" class="choice-note-stack" hidden></div>
         </div>
         <div class="c12">
+          <label>세대알림</label>
           <label class="choice">
-            <input id="householdNotice${index}" type="checkbox">
-            <span>세대알림 (선택 시 차량 출입 시 세대 알림)</span>
+            <input id="householdNotice${index}" type="checkbox" checked>
+            <span>사용</span>
           </label>
+          <div class="choice-note">해당 차량 세대 출입시 알림 설정</div>
         </div>
       </div>
     </section>
@@ -390,7 +392,7 @@ function resetForm() {
     document.getElementById(`ownerName${index}`).value = "";
     document.getElementById(`applicantName${index}`).value = "";
     document.getElementById(`applicantPhone${index}`).value = "";
-    document.getElementById(`householdNotice${index}`).checked = false;
+    document.getElementById(`householdNotice${index}`).checked = true;
     document.querySelectorAll(`[data-ownership-group="${index}"] input`).forEach((input) => { input.checked = false; });
     document.querySelectorAll(`[data-category-group="${index}"] input`).forEach((input) => { input.checked = input.value === CATEGORY_NONE; });
     document.getElementById(`ownershipInfo${index}`).hidden = true;
