@@ -257,13 +257,9 @@ button{
       <div class="hero">
         <span class="eyebrow">EXTERNAL VEHICLE REGISTRATION</span>
         <h1>&#xC678;&#xBD80; &#xCC28;&#xB7C9; &#xB4F1;&#xB85D; &#xC2E0;&#xCCAD;&#xC11C;</h1>
-        <p class="lead">&#xD611;&#xB825;&#xC5C5;&#xCCB4;&#xC640; &#xC720;&#xAD00;&#xC5C5;&#xCCB4; &#xCC28;&#xB7C9; &#xB4F1;&#xB85D;&#xC744; &#xC704;&#xD55C; &#xC785;&#xB825; &#xD398;&#xC774;&#xC9C0;&#xC785;&#xB2C8;&#xB2E4;. &#xC0AC;&#xC5C5;&#xC790;&#xB4F1;&#xB85D;&#xC99D;&#xACFC; &#xCC28;&#xB7C9;&#xB4F1;&#xB85D;&#xC99D; &#xB4F1; &#xD544;&#xC694;&#xD55C; &#xC11C;&#xB958;&#xB294; &#xAD00;&#xB9AC;&#xC790; &#xC548;&#xB0B4;&#xC5D0; &#xB530;&#xB77C; &#xBCC4;&#xB3C4;&#xB85C; &#xD655;&#xC778;&#xD574; &#xC8FC;&#xC138;&#xC694;.</p>
+        <p class="lead">&#xC678;&#xBD80;&#xCC28;&#xB7C9; &#xB4F1;&#xB85D;&#xC2DC; &#xC0AC;&#xC5C5;&#xC790;&#xB4F1;&#xB85D;&#xC99D;&#xACFC; &#xCC28;&#xB7C9;&#xB4F1;&#xB85D;&#xC99D; &#xD655;&#xC778;&#xC774; &#xD544;&#xC694;&#xD569;&#xB2C8;&#xB2E4;.</p>
       </div>
       <div class="content">
-        <div class="info-box">
-          <p>&#xCD9C;&#xC785;&#xAD6C;&#xC5ED;&#xC740; &#xBCF5;&#xC218; &#xC120;&#xD0DD;&#xC774; &#xAC00;&#xB2A5;&#xD569;&#xB2C8;&#xB2E4;. &#xC77C;&#xBC18;&#xC801;&#xC73C;&#xB85C; &#xC9C0;&#xC0C1;&#xACFC; &#xC9C0;&#xD558;&#xB97C; &#xBAA8;&#xB450; &#xC120;&#xD0DD;&#xD560; &#xC218; &#xC788;&#xC73C;&#xBA70;, &#xC9C0;&#xD558; &#xC8FC;&#xCC28;&#xC7A5;&#xC744; &#xC774;&#xC6A9;&#xD558;&#xC9C0; &#xC54A;&#xB294; &#xCC28;&#xB7C9;&#xC740; &#xC9C0;&#xC0C1;&#xB9CC; &#xC120;&#xD0DD;&#xD574; &#xC8FC;&#xC138;&#xC694;. &#xB9C8;&#xC2A4;&#xD130;&#xD0A4; &#xBC1C;&#xAE09; &#xC5EC;&#xBD80;&#xB3C4; &#xCCB4;&#xD06C;&#xB9CC; &#xD574; &#xC8FC;&#xC2DC;&#xBA74; &#xC9C1;&#xC6D0;&#xC774; &#xB0B4;&#xC6A9;&#xC744; &#xB2E4;&#xC2DC; &#xD655;&#xC778;&#xD569;&#xB2C8;&#xB2E4;.</p>
-        </div>
-
         <div class="grid">
           <div class="c6">
             <label for="companyName">&#xC5C5;&#xCCB4;&#xBA85;</label>
@@ -275,6 +271,7 @@ button{
               <label class="choice"><input type="radio" name="companyType" value="&#xD611;&#xB825;&#xC5C5;&#xCCB4;"><span>&#xD611;&#xB825;&#xC5C5;&#xCCB4;</span></label>
               <label class="choice"><input type="radio" name="companyType" value="&#xC720;&#xAD00;&#xC5C5;&#xCCB4;"><span>&#xC720;&#xAD00;&#xC5C5;&#xCCB4;</span></label>
             </div>
+            <div id="companyTypeNote" class="inline-note"></div>
           </div>
         </div>
 
@@ -337,9 +334,9 @@ function saveCompletionPayload(payload){
 }
 function buildVehicleBlock(index){
   const regionOptions = REGION_OPTIONS.map((region) => `<option value="${escapeHtml(region)}">${escapeHtml(region)}</option>`).join("");
-  const accessZoneOptions = ACCESS_ZONE_OPTIONS.map((zone) => `
+  const accessZoneOptions = ACCESS_ZONE_OPTIONS.map((zone, zoneIndex) => `
     <label class="choice">
-      <input type="checkbox" name="accessZone${index}" value="${escapeHtml(zone)}" checked>
+      <input type="checkbox" name="accessZone${index}" value="${escapeHtml(zone)}" checked ${zoneIndex === 0 ? "disabled" : ""}>
       <span>${escapeHtml(zone)}</span>
     </label>
   `).join("");
@@ -381,7 +378,7 @@ function buildVehicleBlock(index){
         <div class="c8">
           <label>\uCD9C\uC785\uAD6C\uC5ED</label>
           <div class="choice-group" data-access-zone-group="${index}">${accessZoneOptions}</div>
-          <p class="subnote">\uC77C\uBC18\uC801\uC73C\uB85C \uC9C0\uC0C1, \uC9C0\uD558 \uBAA8\uB450 \uC120\uD0DD\uD560 \uC218 \uC788\uC73C\uBA70 \uC9C0\uD558\uB97C \uC774\uC6A9\uD558\uC9C0 \uC54A\uB294 \uCC28\uB7C9\uC740 \uC9C0\uC0C1\uB9CC \uC120\uD0DD\uD574 \uC8FC\uC138\uC694.</p>
+          <p class="subnote">\uC9C0\uD558 \uCD9C\uC785\uC740 \uD558\uC9C0 \uC54A\uB294 \uCC28\uB7C9\uC740 \uC9C0\uC0C1\uB9CC \uC120\uD0DD\uD574\uC8FC\uC138\uC694. (\uB4F1\uD558\uC6D0 \uCC28\uB7C9, \uD68C\uCC28 \uCC28\uB7C9 \uB4F1)</p>
         </div>
         <div class="c12">
           <label class="choice">
@@ -463,6 +460,23 @@ function getSelectedCompanyType(){
   const checked = document.querySelector('input[name="companyType"]:checked');
   return checked ? checked.value : "";
 }
+function syncCompanyTypeNote(){
+  const noteEl = document.getElementById("companyTypeNote");
+  if (!noteEl) return;
+  const selected = getSelectedCompanyType();
+  if (selected === "협력업체") {
+    noteEl.textContent = "\uAD00\uB9AC\uC8FC\uCCB4, \uC785\uB300\uC758\uC640 \uACC4\uC57D\uB41C \uC5C5\uCCB4\uB9CC \uC120\uD0DD\uD574\uC8FC\uC138\uC694.";
+    noteEl.classList.add("show");
+    return;
+  }
+  if (selected === "유관업체") {
+    noteEl.textContent = "\uD0DD\uBC30, \uD1B5\uD559 \uCC28\uB7C9 \uB4F1";
+    noteEl.classList.add("show");
+    return;
+  }
+  noteEl.textContent = "";
+  noteEl.classList.remove("show");
+}
 function getSelectedAccessZones(index){
   return Array.from(document.querySelectorAll(`[data-access-zone-group="${index}"] input:checked`)).map((input) => input.value);
 }
@@ -486,6 +500,7 @@ function hasVehicleData(vehicle){
 function resetForm(){
   companyNameEl.value = "";
   document.querySelectorAll('input[name="companyType"]').forEach((input) => { input.checked = false; });
+  syncCompanyTypeNote();
   vehicleListEl.innerHTML = "";
   vehicleCount = 0;
   addVehicleBlock();
@@ -558,6 +573,7 @@ async function handleSubmit(){
     applicant_phone: vehicle.applicant_phone,
     access_zones: vehicle.access_zones,
     master_key_requested: vehicle.master_key_requested,
+    status: "applied",
     memo: null,
     car_order: vehicle.car_order
   }));
@@ -613,7 +629,11 @@ async function handleSubmit(){
 addVehicleBtn.addEventListener("click", addVehicleBlock);
 submitBtn.addEventListener("click", handleSubmit);
 resetBtn.addEventListener("click", resetForm);
+document.querySelectorAll('input[name="companyType"]').forEach((input) => {
+  input.addEventListener("change", syncCompanyTypeNote);
+});
 addVehicleBlock();
+syncCompanyTypeNote();
 </script>
 </body>
 </html>
