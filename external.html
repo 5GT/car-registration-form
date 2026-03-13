@@ -547,6 +547,9 @@ async function handleSubmit(){
     }
     resetForm();
     setStatus(`\uC81C\uCD9C\uC774 \uC644\uB8CC\uB418\uC5C8\uC2B5\uB2C8\uB2E4. \uC800\uC7A5\uB41C \uCC28\uB7C9 \uC218: ${rows.length}\uB300`, "success");
+    window.setTimeout(() => {
+      location.href = "./index.html";
+    }, 1200);
   }catch(error){
     setStatus(`\uC624\uB958\uAC00 \uBC1C\uC0DD\uD588\uC2B5\uB2C8\uB2E4. ${error.message}`, "error");
   }finally{

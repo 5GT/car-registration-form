@@ -504,6 +504,9 @@ async function handleSubmit() {
     }
     resetForm();
     setStatus(`제출이 완료되었습니다. 저장된 차량 수: ${rows.length}대`, "success");
+    window.setTimeout(() => {
+      location.href = "./index.html";
+    }, 1200);
   } catch (error) {
     setStatus(`오류가 발생했습니다. ${error.message}`, "error");
   } finally {
