@@ -534,7 +534,9 @@ async function handleSubmit() {
     });
     const data = await response.json().catch(() => ({}));
     if (!response.ok) {
-      if (data && (data.code === "23505" || String(data.message || "").includes("duplicate"))) {
+      if (String(data.message || "").includes("세대당 차량은 최대 3대")) {
+        setStatus("세대당 차량은 최대 3대까지 등록 가능합니다.", "error");
+      } else if (data && (data.code === "23505" || String(data.message || "").includes("duplicate"))) {
         setStatus("이미 등록된 차량번호가 있어 제출되지 않았습니다.", "error");
       } else {
         setStatus(`제출에 실패했습니다. ${data.message || "Supabase 설정을 다시 확인해 주세요."}`, "error");
