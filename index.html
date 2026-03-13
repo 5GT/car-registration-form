@@ -6,15 +6,15 @@
 <title>차량등록 신청</title>
 <style>
 :root{
-  --paper:#f5efe4;
-  --card:#fffdf8;
-  --ink:#20333a;
-  --sub:#5f7178;
-  --line:#d8cebf;
-  --accent:#1f6f78;
-  --accent-strong:#155057;
-  --accent-soft:#dbeceb;
-  --shadow:0 24px 64px rgba(44,42,34,.12);
+  --paper:#f7fbfc;
+  --card:#ffffff;
+  --ink:#17383f;
+  --sub:#45656b;
+  --line:#c3d5d8;
+  --accent:#2c6773;
+  --accent-strong:#1f5662;
+  --accent-soft:#e7f0f2;
+  --shadow:0 24px 64px rgba(23,56,63,.10);
 }
 *{box-sizing:border-box}
 body{
@@ -23,8 +23,9 @@ body{
   font-family:"Segoe UI","Malgun Gothic",sans-serif;
   color:var(--ink);
   background:
-    radial-gradient(circle at top right, rgba(31,111,120,.14), transparent 22rem),
-    linear-gradient(180deg,#f8f3ea 0%,#efe6d8 100%);
+    radial-gradient(circle at top right, rgba(44,103,115,.12), transparent 24rem),
+    radial-gradient(circle at top left, rgba(31,86,98,.08), transparent 20rem),
+    linear-gradient(180deg,#f9fcfd 0%,#edf4f6 100%);
 }
 .wrap{
   width:min(1080px,calc(100% - 32px));
@@ -39,14 +40,24 @@ body{
   overflow:hidden;
 }
 .hero-top{
-  padding:40px 36px 28px;
+  position:relative;
+  padding:28px 36px 24px 146px;
   background:
-    linear-gradient(135deg,rgba(31,111,120,.12),rgba(31,111,120,0)),
-    linear-gradient(180deg,#fffdf9,#f7f0e5);
+    linear-gradient(135deg,rgba(44,103,115,.10),rgba(44,103,115,0)),
+    linear-gradient(180deg,#ffffff,#f6fbfc);
   border-bottom:1px solid var(--line);
 }
+.hero-top::before{
+  content:"";
+  position:absolute;
+  left:34px;
+  top:22px;
+  width:88px;
+  height:88px;
+  background:url("./parkreeks-logo.png") center/contain no-repeat;
+}
 .eyebrow{
-  display:inline-flex;
+  display:none;
   padding:8px 14px;
   border-radius:999px;
   background:var(--accent-soft);
@@ -56,10 +67,11 @@ body{
   letter-spacing:.04em;
 }
 h1{
-  margin:16px 0 12px;
+  margin:0 0 12px;
   font-size:clamp(34px,5vw,52px);
   line-height:1.08;
   letter-spacing:-.03em;
+  color:var(--accent-strong);
 }
 .lead{
   margin:0;
@@ -76,7 +88,7 @@ h1{
 .guide{
   border:1px solid var(--line);
   border-radius:24px;
-  background:#fffaf1;
+  background:#ffffff;
   padding:24px;
 }
 .guide h2,.cards h2{
@@ -132,7 +144,7 @@ h1{
   padding:24px;
   border-radius:24px;
   border:1px solid var(--line);
-  background:var(--card);
+  background:#ffffff;
   box-shadow:0 16px 40px rgba(32,51,58,.06);
 }
 .card .badge{
@@ -142,7 +154,7 @@ h1{
   border-radius:999px;
   font-size:12px;
   font-weight:700;
-  background:var(--accent-soft);
+  background:#edf5f6;
   color:var(--accent-strong);
 }
 .card h3{
@@ -169,7 +181,7 @@ h1{
   font-weight:700;
 }
 .card a.secondary{
-  background:#405e64;
+  background:#40646b;
 }
 .foot{
   margin-top:18px;
@@ -183,6 +195,8 @@ h1{
 @media (max-width:640px){
   .wrap{width:min(100%,calc(100% - 20px));padding:20px 0 40px}
   .hero-top,.hero-grid{padding:24px 18px}
+  .hero-top{padding-left:18px;padding-top:114px}
+  .hero-top::before{left:18px;top:20px;width:76px;height:76px}
   h1{font-size:34px}
   .card h3{font-size:22px}
 }

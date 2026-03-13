@@ -3,17 +3,17 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>신청 완료</title>
+<title>&#xC2E0;&#xCCAD; &#xC644;&#xB8CC;</title>
 <style>
 :root{
-  --paper:#fffdf8;
-  --ink:#20333a;
-  --sub:#5f7178;
-  --line:#d4cbbd;
-  --accent:#1f6f78;
-  --accent-strong:#155057;
-  --accent-soft:#e1efed;
-  --shadow:0 20px 60px rgba(44,42,34,.08);
+  --paper:#f7fbfc;
+  --ink:#17383f;
+  --sub:#45656b;
+  --line:#c3d5d8;
+  --accent:#2c6773;
+  --accent-strong:#1f5662;
+  --accent-soft:#e7f0f2;
+  --shadow:0 20px 60px rgba(23,56,63,.10);
 }
 *{box-sizing:border-box}
 body{
@@ -22,8 +22,9 @@ body{
   font-family:"Segoe UI","Malgun Gothic",sans-serif;
   color:var(--ink);
   background:
-    radial-gradient(circle at top right, rgba(31,111,120,.14), transparent 22rem),
-    linear-gradient(180deg,#f8f3ea 0%,#efe6d8 100%);
+    radial-gradient(circle at top right, rgba(44,103,115,.12), transparent 24rem),
+    radial-gradient(circle at top left, rgba(31,86,98,.08), transparent 20rem),
+    linear-gradient(180deg,#f9fcfd 0%,#edf4f6 100%);
 }
 .wrap{
   width:min(920px,calc(100% - 32px));
@@ -38,11 +39,21 @@ body{
   overflow:hidden;
 }
 .hero{
-  padding:34px 32px 24px;
+  position:relative;
+  padding:28px 32px 24px 148px;
   border-bottom:1px solid var(--line);
   background:
-    linear-gradient(135deg,rgba(31,111,120,.10),rgba(31,111,120,0)),
-    linear-gradient(180deg,#fffdf9,#f7f0e5);
+    linear-gradient(135deg,rgba(44,103,115,.10),rgba(44,103,115,0)),
+    linear-gradient(180deg,#ffffff,#f6fbfc);
+}
+.hero::before{
+  content:"";
+  position:absolute;
+  left:34px;
+  top:22px;
+  width:88px;
+  height:88px;
+  background:url("./parkreeks-logo.png") center/contain no-repeat;
 }
 .eyebrow{
   display:inline-flex;
@@ -54,9 +65,10 @@ body{
   font-weight:700;
 }
 h1{
-  margin:16px 0 10px;
+  margin:0 0 10px;
   font-size:clamp(30px,4.4vw,44px);
   line-height:1.12;
+  color:var(--accent-strong);
 }
 .lead{
   margin:0;
@@ -74,7 +86,7 @@ h1{
   padding:20px;
   border:1px solid var(--line);
   border-radius:22px;
-  background:#fffdfa;
+  background:#ffffff;
 }
 .card h2{
   margin:0 0 12px;
@@ -89,7 +101,7 @@ h1{
   padding:12px 14px;
   border-radius:16px;
   background:#fff;
-  border:1px solid #e8ddd0;
+  border:1px solid #d9e5e7;
 }
 .fact strong{
   display:block;
@@ -104,7 +116,7 @@ h1{
   padding:14px 16px;
   border-radius:16px;
   background:#fff;
-  border:1px solid #e8ddd0;
+  border:1px solid #d9e5e7;
 }
 .vehicle .title{
   font-weight:800;
@@ -136,12 +148,14 @@ h1{
   color:#fff;
 }
 .btn.secondary{
-  background:#ece3d4;
+  background:#f1f6f7;
   color:var(--ink);
 }
 @media (max-width:700px){
   .wrap{width:min(100%,calc(100% - 20px));padding:20px 0 40px}
   .hero,.content{padding:22px 18px}
+  .hero{padding-top:112px}
+  .hero::before{left:18px;top:18px;width:76px;height:76px}
   .meta{grid-template-columns:1fr}
 }
 </style>
@@ -151,14 +165,14 @@ h1{
     <section class="panel">
       <div class="hero">
         <span class="eyebrow">SUBMISSION COMPLETE</span>
-        <h1>신청서 제출이 완료되었습니다.</h1>
-        <p class="lead" id="lead">입력하신 내용을 아래에서 확인하실 수 있습니다.</p>
+        <h1>&#xC2E0;&#xCCAD;&#xC11C; &#xC81C;&#xCD9C;&#xC774; &#xC644;&#xB8CC;&#xB418;&#xC5C8;&#xC2B5;&#xB2C8;&#xB2E4;.</h1>
+        <p class="lead" id="lead">&#xC785;&#xB825;&#xD558;&#xC2E0; &#xB0B4;&#xC6A9;&#xC740; &#xC544;&#xB798;&#xC5D0;&#xC11C; &#xD655;&#xC778;&#xD558;&#xC2E4; &#xC218; &#xC788;&#xC2B5;&#xB2C8;&#xB2E4;.</p>
       </div>
       <div class="content">
         <div id="summary" class="summary"></div>
         <div class="actions">
-          <a href="./index.html" class="btn primary">메인으로 돌아가기</a>
-          <a id="againLink" href="./index.html" class="btn secondary">다시 신청하기</a>
+          <a href="./index.html" class="btn primary">&#xBA54;&#xC778;&#xC73C;&#xB85C; &#xB3CC;&#xC544;&#xAC00;&#xAE30;</a>
+          <a id="againLink" href="./index.html" class="btn secondary">&#xB2E4;&#xC2DC; &#xC2E0;&#xCCAD;&#xD558;&#xAE30;</a>
         </div>
       </div>
     </section>
@@ -175,45 +189,45 @@ function esc(value){
 }
 
 if (!raw) {
-  leadEl.textContent = "표시할 제출 정보가 없어 메인 페이지로 이동해 다시 진행해 주세요.";
-  summaryEl.innerHTML = '<div class="card"><h2>안내</h2><p>제출 직후에만 신청 요약을 확인할 수 있습니다. 메인으로 돌아가 다시 진행해 주세요.</p></div>';
+  leadEl.textContent = "\uD45C\uC2DC\uD560 \uC81C\uCD9C \uC815\uBCF4\uAC00 \uC5C6\uC5B4 \uBA54\uC778 \uD398\uC774\uC9C0\uB85C \uC774\uB3D9\uD574 \uB2E4\uC2DC \uC9C4\uD589\uD574 \uC8FC\uC138\uC694.";
+  summaryEl.innerHTML = '<div class="card"><h2>\uC548\uB0B4</h2><p>\uC81C\uCD9C \uC9C1\uD6C4\uC5D0\uB9CC \uC2E0\uCCAD \uC694\uC57D\uC744 \uD655\uC778\uD560 \uC218 \uC788\uC2B5\uB2C8\uB2E4. \uBA54\uC778\uC73C\uB85C \uB3CC\uC544\uAC00 \uB2E4\uC2DC \uC9C4\uD589\uD574 \uC8FC\uC138\uC694.</p></div>';
 } else {
   const data = JSON.parse(raw);
   const resident = data.type === "resident";
   againLinkEl.href = resident ? "./resident.html" : "./external.html";
   const meta = resident
     ? `
-      <div class="fact"><strong>신청 유형</strong>입주민 차량 등록</div>
-      <div class="fact"><strong>세대 정보</strong>${esc(data.buildingNumber)}동 ${esc(data.unitNumber)}호</div>
-      <div class="fact"><strong>메모</strong>${esc(data.memo || "-")}</div>
-      <div class="fact"><strong>접수 차량 수</strong>${esc(data.vehicleCount)}대</div>
+      <div class="fact"><strong>\uC2E0\uCCAD \uC720\uD615</strong>\uC785\uC8FC\uBBFC \uCC28\uB7C9 \uB4F1\uB85D</div>
+      <div class="fact"><strong>\uC138\uB300 \uC815\uBCF4</strong>${esc(data.buildingNumber)}\uB3D9 ${esc(data.unitNumber)}\uD638</div>
+      <div class="fact"><strong>\uBA54\uBAA8</strong>${esc(data.memo || "-")}</div>
+      <div class="fact"><strong>\uC811\uC218 \uCC28\uB7C9 \uC218</strong>${esc(data.vehicleCount)}\uB300</div>
     `
     : `
-      <div class="fact"><strong>신청 유형</strong>외부 차량 등록</div>
-      <div class="fact"><strong>업체명</strong>${esc(data.companyName)}</div>
-      <div class="fact"><strong>구분</strong>${esc(data.companyType)}</div>
-      <div class="fact"><strong>접수 차량 수</strong>${esc(data.vehicleCount)}대</div>
+      <div class="fact"><strong>\uC2E0\uCCAD \uC720\uD615</strong>\uC678\uBD80 \uCC28\uB7C9 \uB4F1\uB85D</div>
+      <div class="fact"><strong>\uC5C5\uCCB4\uBA85</strong>${esc(data.companyName || "-")}</div>
+      <div class="fact"><strong>\uAD6C\uBD84</strong>${esc(data.companyType || "-")}</div>
+      <div class="fact"><strong>\uC811\uC218 \uCC28\uB7C9 \uC218</strong>${esc(data.vehicleCount)}\uB300</div>
     `;
   const vehicles = (data.vehicles || []).map((vehicle, index) => {
     const extra = resident
-      ? `세대알림: ${vehicle.householdNotice ? "사용" : "해제"}`
-      : `출입구역: ${esc((vehicle.accessZones || []).join(", ") || "-")} / 마스터키 발급: ${vehicle.masterKeyRequested ? "신청" : "미신청"}`;
+      ? `\uC138\uB300\uC54C\uB9BC: ${vehicle.householdNotice ? "\uC0AC\uC6A9" : "\uC0AC\uC6A9\uC548\uD568"}`
+      : `\uCD9C\uC785\uAD6C\uC5ED: ${esc((vehicle.accessZones || []).join(", ") || "-")} / \uB9C8\uC2A4\uD130\uD0A4 \uBC1C\uAE09: ${vehicle.masterKeyRequested ? "\uC694\uCCAD" : "\uBBF8\uC2E0\uCCAD"}`;
     return `
       <div class="vehicle">
-        <div class="title">차량 ${index + 1} - ${esc(vehicle.carNumber || "-")}</div>
-        <div class="line">차명: ${esc(vehicle.carName || "-")} / 소유자: ${esc(vehicle.ownerName || "-")}</div>
-        <div class="line">사용자: ${esc(vehicle.applicantName || "-")} / 연락처: ${esc(vehicle.applicantPhone || "-")}</div>
+        <div class="title">\uCC28\uB7C9 ${index + 1} - ${esc(vehicle.carNumber || "-")}</div>
+        <div class="line">\uCC28\uBA85: ${esc(vehicle.carName || "-")} / \uC18C\uC720\uC790: ${esc(vehicle.ownerName || "-")}</div>
+        <div class="line">\uC0AC\uC6A9\uC790: ${esc(vehicle.applicantName || "-")} / \uC5F0\uB77D\uCC98: ${esc(vehicle.applicantPhone || "-")}</div>
         <div class="line">${extra}</div>
       </div>
     `;
   }).join("");
   summaryEl.innerHTML = `
     <section class="card">
-      <h2>신청 정보</h2>
+      <h2>\uC2E0\uCCAD \uC815\uBCF4</h2>
       <div class="meta">${meta}</div>
     </section>
     <section class="card">
-      <h2>차량 요약</h2>
+      <h2>\uCC28\uB7C9 \uC694\uC57D</h2>
       <div class="vehicle-list">${vehicles}</div>
     </section>
   `;
