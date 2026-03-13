@@ -193,6 +193,9 @@ function getSubmissionId() {
   if (window.crypto && typeof window.crypto.randomUUID === "function") return window.crypto.randomUUID();
   return `sub-${Date.now()}-${Math.random().toString(16).slice(2, 10)}`;
 }
+function saveCompletionPayload(payload) {
+  sessionStorage.setItem("submissionCompletePayload", JSON.stringify(payload));
+}
 function setStatus(message, type) {
   statusEl.textContent = message;
   statusEl.className = `status ${type}`;
@@ -489,11 +492,23 @@ async function handleSubmit() {
       }
       return;
     }
+    saveCompletionPayload({
+      type: "resident",
+      buildingNumber,
+      unitNumber,
+      memo,
+      vehicleCount: rows.length,
+      vehicles: activeVehicles.map((vehicle) => ({
+        carNumber: `${vehicle.plate_region === "없음" ? "" : vehicle.plate_region}${vehicle.plate_middle}${vehicle.plate_number}`,
+        carName: vehicle.car_name || "",
+        ownerName: vehicle.owner_name || "",
+        applicantName: vehicle.applicant_name || "",
+        applicantPhone: vehicle.applicant_phone || "",
+        householdNotice: Boolean(vehicle.household_notice)
+      }))
+    });
     resetForm();
-    setStatus(`제출이 완료되었습니다. 저장된 차량 수: ${rows.length}대`, "success");
-    window.setTimeout(() => {
-      location.href = "./index.html";
-    }, 1200);
+    location.href = "./complete.html";
   } catch (error) {
     setStatus(`오류가 발생했습니다. ${error.message}`, "error");
   } finally {

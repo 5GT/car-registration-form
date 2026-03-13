@@ -332,6 +332,9 @@ function getSubmissionId(){
   if (window.crypto && typeof window.crypto.randomUUID === "function") return window.crypto.randomUUID();
   return `sub-${Date.now()}-${Math.random().toString(16).slice(2)}`;
 }
+function saveCompletionPayload(payload){
+  sessionStorage.setItem("submissionCompletePayload", JSON.stringify(payload));
+}
 function buildVehicleBlock(index){
   const regionOptions = REGION_OPTIONS.map((region) => `<option value="${escapeHtml(region)}">${escapeHtml(region)}</option>`).join("");
   const accessZoneOptions = ACCESS_ZONE_OPTIONS.map((zone) => `
@@ -582,11 +585,23 @@ async function handleSubmit(){
       }
       return;
     }
+    saveCompletionPayload({
+      type: "external",
+      companyName,
+      companyType,
+      vehicleCount: rows.length,
+      vehicles: vehicles.map((vehicle) => ({
+        carNumber: `${vehicle.plate_region === "\uC5C6\uC74C" ? "" : vehicle.plate_region}${vehicle.plate_middle}${vehicle.plate_number}`,
+        carName: vehicle.car_name || "",
+        ownerName: vehicle.owner_name || "",
+        applicantName: vehicle.applicant_name || "",
+        applicantPhone: vehicle.applicant_phone || "",
+        accessZones: vehicle.access_zones || [],
+        masterKeyRequested: Boolean(vehicle.master_key_requested)
+      }))
+    });
     resetForm();
-    setStatus(`\uC81C\uCD9C\uC774 \uC644\uB8CC\uB418\uC5C8\uC2B5\uB2C8\uB2E4. \uC800\uC7A5\uB41C \uCC28\uB7C9 \uC218: ${rows.length}\uB300`, "success");
-    window.setTimeout(() => {
-      location.href = "./index.html";
-    }, 1200);
+    location.href = "./complete.html";
   }catch(error){
     setStatus(`\uC624\uB958\uAC00 \uBC1C\uC0DD\uD588\uC2B5\uB2C8\uB2E4. ${error.message}`, "error");
   }finally{
