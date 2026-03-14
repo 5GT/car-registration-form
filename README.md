@@ -7,29 +7,29 @@
 - 관리사무소 직원이 방문 시 신청 내역을 조회하고 서류를 확인한 뒤 차량등록카드(스티커)를 발급할 수 있게 합니다.
 - 공개 페이지와 관리자 기능을 분리하되, Supabase 프로젝트는 하나만 사용합니다.
 
-## 현재 구조
-- `index.html`: 입주민용 신청 페이지 초안
-- `admin.html`: 관리자 권한 테스트 페이지
-- `car_registrations_public_patch.sql`: 기존 테이블 보정용 SQL
-- `supabase_rls_plan.sql`: 현재 적용한 권한 분리 정책 참고용 SQL
+## 현재 파일
+- `index.html`: 메인 진입 페이지
+- `resident.html`: 입주민 차량등록 신청 페이지
+- `external.html`: 외부 차량 등록 페이지
+- `complete.html`: 신청 완료 안내 페이지
+- `parkreeks-logo.png`: 공용 로고 이미지
+- `STAFF_GUIDE.md`: 직원용 사용 안내 및 업무 절차 문서
 
 ## 보안 구조
 - 입주민 페이지는 로그인 없이 사용합니다.
 - 입주민은 `insert`만 가능합니다.
-- 관리자 페이지는 `parkl4562@naver.com` 공용 관리자 계정으로 로그인합니다.
-- 로그인한 관리자만 `select`, `insert`, `update`, `delete`가 가능합니다.
+- 관리자 페이지는 별도 로그인 구조를 사용합니다.
+- 로그인한 관리자만 조회, 수정, 삭제가 가능합니다.
 
-## 확인된 상태
-- `anon` 키는 `insert`만 가능합니다.
-- `anon` 키로 `select/update/delete`는 차단되었습니다.
-- `admin.html`에서 관리자 로그인 후 조회/수정/삭제 테스트를 진행할 수 있습니다.
-
-## 다음 구현 우선순위
-1. 관리자 로그인 후 목록 조회가 정상 동작하는지 확인
-2. `car_registrations` 테이블을 운영용 컬럼 기준으로 재설계
-3. 입주민용 페이지와 관리자용 페이지 UI를 정식 버전으로 분리
-4. 관리자 페이지에 검색, 상태관리, 출력 기능 추가
+## 참고 SQL
+- `supabase_rls_plan.sql`: 권한 분리 정책 참고용 SQL
+- `car_registrations_public_patch.sql`: 공개 등록 관련 보정 SQL
+- `car_registrations_household_limit_patch.sql`: 세대당 3대 제한 트리거 SQL
+- `car_registrations_compact_discount_patch.sql`: 경차 할인 컬럼 추가 SQL
+- `car_registrations_household_notice_patch.sql`: 세대알림 컬럼 추가 SQL
+- `external_car_registrations.sql`: 외부 차량 테이블 관련 SQL
 
 ## 메모
 - 브라우저에 `service_role` 키를 넣으면 안 됩니다.
-- 관리자 페이지도 `anon` 키 + 로그인 세션 + RLS 구조로 유지합니다.
+- 입주민 테스트는 시크릿 모드에서 진행하는 것이 안전합니다.
+- 관리자 기능은 실제 관리자 페이지 기준으로 운영합니다.
