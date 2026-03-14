@@ -1,6 +1,8 @@
-create or replace function public.enforce_car_registrations_household_limit()
+﻿create or replace function public.enforce_car_registrations_household_limit()
 returns trigger
 language plpgsql
+security definer
+set search_path = public
 as $$
 declare
   current_count integer;
