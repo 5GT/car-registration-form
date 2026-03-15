@@ -6,7 +6,6 @@
 <title>입주민 차량등록 신청</title>
 <style>
 :root{
-  color-scheme:light;
   --paper:#f7fbfc;
   --ink:#17383f;
   --sub:#45656b;
@@ -41,8 +40,7 @@ h1{margin:0 0 8px;font-size:clamp(30px, 4vw, 48px);line-height:1.08;letter-spaci
 .c4{grid-column:span 4}.c6{grid-column:span 6}.c12{grid-column:span 12}
 label{display:block;margin:0 0 8px;font-size:14px;font-weight:800}
 .hint{margin-top:8px;color:var(--sub);font-size:13px;line-height:1.5}
-input,select,textarea{width:100%;border:1px solid #c8dadd;border-radius:14px;background:#fff!important;color:var(--ink)!important;padding:13px 14px;font-size:15px;font:inherit}
-input::placeholder,textarea::placeholder{color:#6d8489}
+input,select,textarea{width:100%;border:1px solid #c8dadd;border-radius:14px;background:#fff;color:var(--ink);padding:13px 14px;font-size:15px;font:inherit}
 input:focus,select:focus,textarea:focus{outline:2px solid rgba(31,111,120,.18);border-color:var(--accent)}
 textarea{min-height:96px;resize:vertical}
 .vehicle-list{display:grid;gap:14px}
@@ -55,16 +53,15 @@ textarea{min-height:96px;resize:vertical}
 .choice-group{display:flex;flex-wrap:wrap;gap:10px}
 .choice{position:relative}
 .choice input{position:absolute;opacity:0;pointer-events:none}
-.choice span{display:inline-flex;align-items:center;justify-content:center;min-height:42px;padding:10px 14px;border:1px solid #8eacb2;border-radius:999px;background:#e3eff2!important;color:#1e4d57!important;font-size:14px;font-weight:800;cursor:pointer;transition:.16s ease;box-shadow:0 4px 10px rgba(23,56,63,.06)}
-.choice input:checked+span{background:#245f6b;border-color:#1f5662;color:#fff;transform:translateY(-1px);box-shadow:0 8px 18px rgba(31,86,98,.18)}
+.choice span{display:inline-flex;align-items:center;justify-content:center;min-height:42px;padding:10px 14px;border:1px solid #bfd0d2;border-radius:999px;background:#fff;color:#32555a;font-size:14px;font-weight:700;cursor:pointer;transition:.16s ease}
+.choice input:checked+span{background:var(--accent);border-color:var(--accent);color:#fff;transform:translateY(-1px)}
 .choice-note{margin-top:10px;border-left:4px solid #ceb37a;padding:10px 12px;border-radius:10px;background:#fff7e4;color:#6b5324;font-size:13px;line-height:1.55}
 .choice-note-stack{display:grid;gap:10px;margin-top:10px}
 .choice-note-stack .choice-note{margin-top:0}
 .actions{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-top:22px}
 .btn{border:0;border-radius:16px;padding:14px 22px;font:inherit;font-size:15px;font-weight:800;cursor:pointer}
-.btn.primary{background:linear-gradient(135deg,#2f7f8d,#245f6b);color:#fff;box-shadow:0 16px 30px rgba(31,86,98,.24);border:1px solid #1f5662}
-.btn.ghost{background:#dbeaec!important;color:#214d56!important;border:1px solid #9db8bd}.btn:disabled{opacity:.6;cursor:not-allowed;box-shadow:none}
-.btn:hover,.btn:focus-visible{filter:brightness(1.03);outline:2px solid rgba(47,127,141,.18);outline-offset:2px}
+.btn.primary{background:linear-gradient(135deg, var(--accent), var(--accent-strong));color:#fff;box-shadow:0 14px 28px rgba(31,111,120,.22)}
+.btn.ghost{background:#dbeaec;color:#214d56;border:1px solid #b8d0d4}.btn:disabled{opacity:.6;cursor:not-allowed;box-shadow:none}
 .status{min-height:26px;margin-top:16px;font-size:14px;font-weight:700}.status.error{color:#a1402c}.status.success{color:var(--ok)}.status.info{color:var(--accent)}
 .faq{margin-top:24px}.faq details{border-top:1px solid #d7e4e6;padding:14px 0}.faq details:last-child{border-bottom:1px solid #d7e4e6}.faq summary{cursor:pointer;font-weight:800;list-style:none}.faq summary::-webkit-details-marker{display:none}.faq p{margin:10px 0 0;color:var(--sub);line-height:1.65}
 .simple-note{margin-top:18px;color:var(--sub);font-size:13px;line-height:1.6}

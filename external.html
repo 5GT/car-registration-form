@@ -6,7 +6,6 @@
 <title>&#xC678;&#xBD80; &#xCC28;&#xB7C9; &#xB4F1;&#xB85D; &#xC2E0;&#xCCAD;</title>
 <style>
 :root{
-  color-scheme:light;
   --paper:#f7fbfc;
   --ink:#17383f;
   --sub:#45656b;
@@ -129,10 +128,9 @@ input[type="text"],select{
   padding:12px 14px;
   border:1px solid var(--line);
   border-radius:14px;
-  background:#fff!important;
-  color:var(--ink)!important;
+  background:#fff;
+  color:var(--ink);
 }
-input[type="text"]::placeholder{color:#6d8489}
 .choice-group{
   display:flex;
   flex-wrap:wrap;
@@ -150,21 +148,19 @@ input[type="text"]::placeholder{color:#6d8489}
   justify-content:center;
   min-height:44px;
   padding:10px 14px;
-  border:1px solid #8eacb2;
+  border:1px solid var(--line);
   border-radius:999px;
-  background:#e3eff2!important;
-  color:#1e4d57!important;
-  font-weight:800;
+  background:#fff;
+  color:var(--ink);
+  font-weight:700;
   cursor:pointer;
   transition:.16s ease;
-  box-shadow:0 4px 10px rgba(23,56,63,.06);
 }
 .choice input:checked+span{
-  background:#245f6b;
-  border-color:#1f5662;
+  background:var(--accent);
+  border-color:var(--accent);
   color:#fff;
   transform:translateY(-1px);
-  box-shadow:0 8px 18px rgba(31,86,98,.18);
 }
 .section-title{
   margin:28px 0 14px;
@@ -222,36 +218,25 @@ button{
   padding:0 18px;
   border-radius:16px;
   cursor:pointer;
-  color:var(--ink);
 }
 .btn-primary{
-  background:#2f7f8d;
+  background:var(--accent);
   color:#fff;
   font-weight:700;
-  border:1px solid #1f5662;
-  box-shadow:0 16px 30px rgba(31,86,98,.24);
 }
 .btn-secondary{
-  background:#3a7884;
+  background:#355f68;
   color:#fff;
-  border:1px solid #245e68;
-  box-shadow:0 12px 24px rgba(31,86,98,.18);
 }
 .btn-light{
   background:#dbeaec;
   color:#214d56;
   font-weight:700;
-  border:1px solid #9db8bd;
 }
 .btn-danger{
   background:#f4d9d2;
   color:var(--danger);
   font-weight:700;
-}
-button:hover,button:focus-visible{
-  filter:brightness(1.03);
-  outline:2px solid rgba(47,127,141,.18);
-  outline-offset:2px;
 }
 .status{
   margin-top:18px;
