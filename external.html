@@ -289,6 +289,9 @@ button{
             <div id="companyTypeNote" class="inline-note"></div>
           </div>
         </div>
+        <div id="templateInfoBox" class="info-box">
+          <p id="templateInfoText">&#xB192;&#xC774; 2.7m &#xCD08;&#xACFC; &#xCC28;&#xB7C9;&#xC740; &#xC9C0;&#xD558; &#xCD9C;&#xC785;&#xC774; &#xBD88;&#xAC00; &#xD569;&#xB2C8;&#xB2E4;.<br>&#xACF5;&#xB3D9;&#xD604;&#xAD00; &#xB9C8;&#xC2A4;&#xD130;&#xD0A4; &#xBC1C;&#xAE09;&#xC740; &#xD0DD;&#xBC30;, &#xBC30;&#xC1A1;&#xCC28;&#xB7C9;&#xB9CC; &#xAC00;&#xB2A5;&#xD569;&#xB2C8;&#xB2E4;.<br>&#xC81C;&#xCD9C;&#xC11C;&#xB958;: &#xC790;&#xB3D9;&#xCC28;&#xB4F1;&#xB85D;&#xC99D;, &#xC0AC;&#xC5C5;&#xC790;&#xB4F1;&#xB85D;&#xC99D;</p>
+        </div>
 
         <h2 class="section-title">&#xCC28;&#xB7C9; &#xC815;&#xBCF4;</h2>
         <div id="vehicleList" class="vehicle-list"></div>
@@ -310,14 +313,18 @@ button{
 const SUPABASE_URL = "https://qjaqbvytoyqysdlfywbm.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFqYXFidnl0b3lxeXNkbGZ5d2JtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMxNzA0NTMsImV4cCI6MjA4ODc0NjQ1M30.GMiLAzShrjCVT5k3GcyUodfndEobwHvpwWp-PtxrN0Y";
 const TABLE_NAME = "external_car_registrations";
+const TEMPLATE_TABLE = "print_template_settings";
 const REGION_OPTIONS = ["\uC5C6\uC74C","\uACBD\uAE30","\uC11C\uC6B8","\uC778\uCC9C","\uAC15\uC6D0","\uCDA9\uBD81","\uCDA9\uB0A8","\uC138\uC885","\uB300\uC804","\uC804\uBD81","\uACBD\uBD81","\uB300\uAD6C","\uACBD\uB0A8","\uC6B8\uC0B0","\uBD80\uC0B0","\uC804\uB0A8","\uAD11\uC8FC","\uC81C\uC8FC"];
 const ACCESS_ZONE_OPTIONS = ["\uC9C0\uC0C1","\uC9C0\uD558"];
+let EXTERNAL_GUIDE_TEXT = "높이 2.7m 초과 차량은 지하 출입이 불가 합니다.\n공동현관 마스터키 발급은 택배, 배송차량만 가능합니다.";
+let EXTERNAL_DOC_TEXT = "자동차등록증, 사업자등록증";
 const vehicleListEl = document.getElementById("vehicleList");
 const companyNameEl = document.getElementById("companyName");
 const addVehicleBtn = document.getElementById("addVehicleBtn");
 const submitBtn = document.getElementById("submitBtn");
 const resetBtn = document.getElementById("resetBtn");
 const statusEl = document.getElementById("status");
+const templateInfoTextEl = document.getElementById("templateInfoText");
 let vehicleCount = 0;
 
 function escapeHtml(value){
@@ -330,6 +337,40 @@ function setStatus(message,type){
 function clearStatus(){
   statusEl.textContent = "";
   statusEl.className = "status";
+}
+function fetchTemplateContent(templateKey){
+  return fetch(`${SUPABASE_URL}/rest/v1/${TEMPLATE_TABLE}?select=content&template_key=eq.${encodeURIComponent(templateKey)}`,{
+    method:"GET",
+    headers:{
+      "apikey":SUPABASE_ANON_KEY,
+      "Authorization":`Bearer ${SUPABASE_ANON_KEY}`
+    }
+  }).then(async(response)=>{
+    const data = await response.json().catch(()=>[]);
+    if(!response.ok) throw new Error(data.message || "template fetch failed");
+    return Array.isArray(data) && data[0] ? data[0].content : null;
+  });
+}
+function renderExternalTemplateInfo(){
+  if(!templateInfoTextEl) return;
+  const lines = [];
+  if(EXTERNAL_GUIDE_TEXT) lines.push(...String(EXTERNAL_GUIDE_TEXT).split("\n").filter(Boolean));
+  if(EXTERNAL_DOC_TEXT) lines.push(`제출서류: ${EXTERNAL_DOC_TEXT}`);
+  templateInfoTextEl.innerHTML = lines.map((line)=>escapeHtml(line)).join("<br>");
+}
+function applyExternalTemplateContent(content){
+  if(!content || typeof content !== "object") return;
+  if(content.registrationGuide) EXTERNAL_GUIDE_TEXT = String(content.registrationGuide);
+  if(content.officeDocText) EXTERNAL_DOC_TEXT = String(content.officeDocText);
+}
+async function loadExternalTemplateContent(){
+  try{
+    const content = await fetchTemplateContent("external");
+    applyExternalTemplateContent(content);
+  }catch(_){
+    // Keep static fallback text if template loading fails.
+  }
+  renderExternalTemplateInfo();
 }
 function formatPhone(value){
   const digits = String(value || "").replace(/\D/g,"").slice(0,11);
@@ -649,6 +690,7 @@ document.querySelectorAll('input[name="companyType"]').forEach((input) => {
 });
 addVehicleBlock();
 syncCompanyTypeNote();
+loadExternalTemplateContent();
 </script>
 </body>
 </html>

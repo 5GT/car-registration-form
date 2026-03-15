@@ -134,8 +134,9 @@ textarea{min-height:96px;resize:vertical}
 const SUPABASE_URL = "https://qjaqbvytoyqysdlfywbm.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFqYXFidnl0b3lxeXNkbGZ5d2JtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMxNzA0NTMsImV4cCI6MjA4ODc0NjQ1M30.GMiLAzShrjCVT5k3GcyUodfndEobwHvpwWp-PtxrN0Y";
 const TABLE_NAME = "car_registrations";
+const TEMPLATE_TABLE = "print_template_settings";
 const OWNERSHIP_OPTIONS = ["본인명의", "가족명의", "렌트", "회사차량"];
-const OWNERSHIP_INFO = {
+let OWNERSHIP_INFO = {
   "본인명의": "제출서류: 자동차등록증, 실거주 확인 서류 등 관리자 안내 기준으로 준비해 주세요.",
   "가족명의": "제출서류: 가족관계 확인 서류와 실거주 확인 서류가 필요할 수 있습니다.",
   "렌트": "제출서류: 렌트 또는 리스 계약서가 필요할 수 있습니다.",
@@ -144,11 +145,12 @@ const OWNERSHIP_INFO = {
 const CATEGORY_NONE = "해당사항 없음";
 const CATEGORY_OPTIONS = [CATEGORY_NONE, "전기차", "경차", "대형", "장애인주차표지"];
 const CATEGORY_EXCLUSIVE = { "경차": "대형", "대형": "경차" };
-const CATEGORY_INFO = {
+let CATEGORY_INFO = {
   "전기차": "전기차 충전시설 이용을 위해 관리사무소에서 세대 카드에 차량 정보를 등록해야 합니다. (업체 변경 시 달라질 수 있습니다.)",
   "대형": "높이 2.7m 초과 차량과 캠핑카, 카라반, 트레일러, 장의차는 단지 내 주차 등록 및 진입이 불가합니다.",
   "장애인주차표지": "유효한 장애인 주차표지를 부착한 차량만 전용구역을 이용할 수 있으며, 미부착 차량이 주차할 경우 즉시 단속됩니다."
 };
+let COMPACT_DISCOUNT_INFO = "경차는 경차 전용구역에 주차해야 하며, 이를 3회 이상 위반할 경우 월 1만 원의 주차료 할인 혜택이 영구 박탈됩니다.";
 function buildA52BLAptStructure(){const s={};const ensure=d=>(s[d]??={});const set=(d,h,t)=>{ensure(String(d))[String(h)]=t};const addFloors=(d,ff,ft,lines,by,ex=[])=>{const e=new Set(ex.map(String));for(let f=ff;f<=ft;f++){for(const ln of lines){const ho=String(f*100+ln);if(e.has(ho))continue;const t=by[ln];if(!t)continue;set(d,ho,t)}}};addFloors("3831",1,10,[1,2,3,4],{1:"97A",2:"97A",3:"97A",4:"97A"},["102","202"]);addFloors("3831",11,13,[3,4],{3:"97A",4:"97A"});addFloors("3832",1,11,[1,2,3,4],{1:"97A",2:"97A",3:"97A",4:"97A"});addFloors("3832",12,14,[3,4],{3:"97A",4:"97A"});for(let f=1;f<=11;f++){set("3833",f*100+1,"74");set("3833",f*100+2,"74");set("3833",f*100+3,"84A");set("3833",f*100+4,"84A")}set("3833",1203,"84A");set("3833",1204,"84A");set("3833",1303,"110P2");set("3834",102,"84B");for(let f=2;f<=20;f++){set("3834",f*100+1,"84B");set("3834",f*100+2,"84B");set("3834",f*100+3,"97B")}for(let f=1;f<=20;f++){set("3835",f*100+1,"84B");set("3835",f*100+2,"84B");set("3835",f*100+3,"97B")}for(let f=3;f<=19;f++){set("3836",f*100+1,"84B");set("3836",f*100+2,"84B");set("3836",f*100+3,"97B")}set("3836",102,"84B");set("3836",201,"84B");set("3836",202,"84B");set("3836",203,"97B");set("3836",2001,"110P1");for(let f=1;f<=20;f++){set("3837",f*100+1,"84B");set("3837",f*100+2,"84B");set("3837",f*100+3,"97B")}for(let f=3;f<=19;f++){set("3838",f*100+1,"84B");set("3838",f*100+2,"84B");set("3838",f*100+3,"97B")}set("3838",102,"84B");set("3838",201,"84B");set("3838",202,"84B");set("3838",203,"97B");set("3838",2001,"110P1");for(let f=1;f<=20;f++){set("3839",f*100+1,"84B");set("3839",f*100+2,"84B");set("3839",f*100+3,"97B")}delete s["3839"]["102"];addFloors("3840",1,14,[1,2,3,4],{1:"84A",2:"84A",3:"84A",4:"84A"},["1401","1402"]);set("3840",1503,"84A");set("3840",1504,"84A");addFloors("3841",1,14,[1,2,3,4],{1:"84A",2:"84A",3:"84A",4:"84A"});set("3841",1501,"84A");set("3841",1502,"84A");set("3841",1503,"84A");set("3841",1504,"84A");addFloors("3842",1,13,[1,2],{1:"84A",2:"84A"});set("3842",1401,"110P2");for(let f=1;f<=11;f++){set("3843",f*100+1,"110A");set("3843",f*100+2,"84B");set("3843",f*100+3,"74");set("3843",f*100+4,"74")}set("3843",1203,"74");set("3843",1204,"74");return s}
 const aptStructure = buildA52BLAptStructure();
 const getDongs = () => Object.keys(aptStructure).sort((a, b) => Number(a) - Number(b));
@@ -201,6 +203,72 @@ function saveCompletionPayload(payload) {
 function setStatus(message, type) {
   statusEl.textContent = message;
   statusEl.className = `status ${type}`;
+}
+function fetchTemplateContent(templateKey) {
+  return fetch(`${SUPABASE_URL}/rest/v1/${TEMPLATE_TABLE}?select=content&template_key=eq.${encodeURIComponent(templateKey)}`, {
+    method: "GET",
+    headers: {
+      "apikey": SUPABASE_ANON_KEY,
+      "Authorization": `Bearer ${SUPABASE_ANON_KEY}`
+    }
+  }).then(async (response) => {
+    const data = await response.json().catch(() => []);
+    if (!response.ok) throw new Error(data.message || "template fetch failed");
+    return Array.isArray(data) && data[0] ? data[0].content : null;
+  });
+}
+function buildOwnershipInfoText(entry) {
+  if (!entry) return "";
+  const parts = [];
+  if (entry.docs) parts.push(`제출서류: ${entry.docs}`);
+  if (entry.note) parts.push(`확인내용: ${entry.note}`);
+  return parts.join("\n");
+}
+function applyResidentTemplateContent(content) {
+  if (!content || typeof content !== "object") return;
+  if (content.ownershipDocs && typeof content.ownershipDocs === "object") {
+    OWNERSHIP_INFO = {
+      "본인명의": buildOwnershipInfoText(content.ownershipDocs["본인명의"]),
+      "가족명의": buildOwnershipInfoText(content.ownershipDocs["가족명의"]),
+      "렌트": buildOwnershipInfoText(content.ownershipDocs["렌트"]),
+      "회사차량": buildOwnershipInfoText(content.ownershipDocs["회사차량"])
+    };
+  }
+  if (content.categoryGuides && typeof content.categoryGuides === "object") {
+    CATEGORY_INFO = {
+      "전기차": content.categoryGuides["전기차"] || "",
+      "대형": content.categoryGuides["대형"] || "",
+      "장애인주차표지": content.categoryGuides["장애인주차표지"] || ""
+    };
+    COMPACT_DISCOUNT_INFO = content.categoryGuides["경차할인적용"] || COMPACT_DISCOUNT_INFO;
+  }
+}
+function refreshResidentTemplateNotes() {
+  for (let index = 1; index <= VEHICLE_COUNT; index += 1) {
+    const ownershipInfo = document.getElementById(`ownershipInfo${index}`);
+    const selectedOwnership = getSelectedOwnership(index);
+    if (ownershipInfo) {
+      if (selectedOwnership && OWNERSHIP_INFO[selectedOwnership]) {
+        ownershipInfo.hidden = false;
+        ownershipInfo.innerHTML = escapeHtml(OWNERSHIP_INFO[selectedOwnership]).replaceAll("\n", "<br>");
+      } else {
+        ownershipInfo.hidden = true;
+        ownershipInfo.textContent = "";
+      }
+    }
+    updateCategoryInfo(index);
+    const compactInfo = document.querySelector(`#compactDiscountWrap${index} .choice-note`);
+    if (compactInfo) compactInfo.textContent = COMPACT_DISCOUNT_INFO;
+  }
+}
+async function loadResidentTemplateContent() {
+  try {
+    const content = await fetchTemplateContent("resident");
+    applyResidentTemplateContent(content);
+    refreshResidentTemplateNotes();
+  } catch (_) {
+    // Keep static fallback text if template loading fails.
+  }
 }
 function buildVehicleBlock(index) {
   const requiredBadge = index === 1 ? "필수 입력" : "선택 입력";
@@ -277,7 +345,7 @@ function buildVehicleBlock(index) {
                 <span>미적용</span>
               </label>
             </div>
-            <div class="choice-note">경차는 경차 전용구역에 주차해야 하며, 이를 3회 이상 위반할 경우 월 1만 원의 주차료 할인 혜택이 영구 박탈됩니다.</div>
+            <div class="choice-note">${escapeHtml(COMPACT_DISCOUNT_INFO)}</div>
           </div>
         </div>
         <div class="c12">
@@ -376,7 +444,7 @@ for (let index = 1; index <= VEHICLE_COUNT; index += 1) {
         return;
       }
       info.hidden = false;
-      info.textContent = OWNERSHIP_INFO[selected] || "";
+      info.innerHTML = escapeHtml(OWNERSHIP_INFO[selected] || "").replaceAll("\n", "<br>");
     });
   });
   document.querySelectorAll(`[data-category-group="${index}"] input`).forEach((input) => {
@@ -584,6 +652,7 @@ addVehicleBtn.addEventListener("click", () => {
 submitBtn.addEventListener("click", handleSubmit);
 resetBtn.addEventListener("click", resetForm);
 updateVehicleVisibility();
+loadResidentTemplateContent();
 </script>
 </body>
 </html>
