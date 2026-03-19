@@ -272,7 +272,7 @@ async function loadResidentTemplateContent() {
 }
 function buildVehicleBlock(index) {
   const requiredBadge = index === 1 ? "필수 입력" : "선택 입력";
-  const regionOptions = REGION_OPTIONS.map((region) => `<option value="${escapeHtml(region)}">${escapeHtml(region)}</option>`).join("");
+  const regionOptions = [`<option value="">선택</option>`, ...REGION_OPTIONS.filter((region) => region !== "없음").map((region) => `<option value="${escapeHtml(region)}">${escapeHtml(region)}</option>`)].join("");
   const ownershipOptions = OWNERSHIP_OPTIONS.map((label) => `
     <label class="choice">
       <input type="radio" name="ownership${index}" value="${escapeHtml(label)}">
@@ -293,6 +293,20 @@ function buildVehicleBlock(index) {
       </div>
       <div class="plate-grid">
         <div>
+          <label>번호판에 지역명이 있나요?</label>
+          <div class="choice-group" data-has-region-group="${index}">
+            <label class="choice">
+              <input type="radio" name="hasRegion${index}" value="N" checked>
+              <span>없음</span>
+            </label>
+            <label class="choice">
+              <input type="radio" name="hasRegion${index}" value="Y">
+              <span>있음</span>
+            </label>
+          </div>
+          <div class="hint" style="margin-top:10px">예: <strong>123가4567</strong> → 없음 / 예: <strong>경기 123가4567</strong> → 있음</div>
+        </div>
+        <div id="regionWrap${index}" hidden>
           <label for="region${index}">번호판 지역명</label>
           <select id="region${index}">${regionOptions}</select>
         </div>
@@ -309,7 +323,6 @@ function buildVehicleBlock(index) {
           <input id="carName${index}" type="text" placeholder="예: 아반떼, 모델3">
         </div>
       </div>
-      <div class="hint">번호판 지역명이 없다면 <strong>없음</strong>을 선택해 주세요.</div>
       <div class="grid" style="margin-top:14px">
         <div class="c4">
           <label for="ownerName${index}">소유자 성함</label>
@@ -380,8 +393,23 @@ function getSelectedOwnership(index) {
   const checked = document.querySelector(`[data-ownership-group="${index}"] input:checked`);
   return checked ? checked.value : "";
 }
+function hasPlateRegion(index) {
+  const checked = document.querySelector(`[data-has-region-group="${index}"] input:checked`);
+  return checked ? checked.value === "Y" : false;
+}
 function getSelectedCategories(index) {
   return Array.from(document.querySelectorAll(`[data-category-group="${index}"] input:checked`)).map((input) => input.value);
+}
+function syncPlateRegion(index) {
+  const wrap = document.getElementById(`regionWrap${index}`);
+  const select = document.getElementById(`region${index}`);
+  if (!wrap || !select) return;
+  const visible = hasPlateRegion(index);
+  wrap.hidden = !visible;
+  select.disabled = !visible;
+  if (!visible) {
+    select.value = "";
+  }
 }
 function normalizeCategories(index, toggledValue) {
   const inputs = Array.from(document.querySelectorAll(`[data-category-group="${index}"] input`));
@@ -434,6 +462,11 @@ function getHouseholdNotice(index) {
   return !checked || checked.value === "Y";
 }
 for (let index = 1; index <= VEHICLE_COUNT; index += 1) {
+  document.querySelectorAll(`[data-has-region-group="${index}"] input`).forEach((input) => {
+    input.addEventListener("change", () => {
+      syncPlateRegion(index);
+    });
+  });
   document.querySelectorAll(`[data-ownership-group="${index}"] input`).forEach((input) => {
     input.addEventListener("change", () => {
       const info = document.getElementById(`ownershipInfo${index}`);
@@ -460,6 +493,7 @@ for (let index = 1; index <= VEHICLE_COUNT; index += 1) {
   document.getElementById(`applicantPhone${index}`).addEventListener("input", (event) => {
     event.target.value = formatPhone(event.target.value);
   });
+  syncPlateRegion(index);
   updateCategoryInfo(index);
   syncCompactDiscount(index);
 }
@@ -468,7 +502,7 @@ function getVehicleInput(index) {
     car_order: index,
     applicant_name: document.getElementById(`applicantName${index}`).value.trim(),
     applicant_phone: formatPhone(document.getElementById(`applicantPhone${index}`).value),
-    plate_region: document.getElementById(`region${index}`).value.trim() || "없음",
+    plate_region: hasPlateRegion(index) ? (document.getElementById(`region${index}`).value.trim() || "") : "없음",
     plate_middle: document.getElementById(`mid${index}`).value.trim().toUpperCase(),
     plate_number: document.getElementById(`last${index}`).value.replace(/\D/g, "").trim(),
     car_name: document.getElementById(`carName${index}`).value.trim(),
@@ -489,7 +523,8 @@ function resetForm() {
   visibleVehicleCount = 1;
   updateVehicleVisibility();
   for (let index = 1; index <= VEHICLE_COUNT; index += 1) {
-    document.getElementById(`region${index}`).value = "없음";
+    document.querySelectorAll(`[data-has-region-group="${index}"] input`).forEach((input) => { input.checked = input.value === "N"; });
+    document.getElementById(`region${index}`).value = "";
     document.getElementById(`mid${index}`).value = "";
     document.getElementById(`last${index}`).value = "";
     document.getElementById(`carName${index}`).value = "";
@@ -502,6 +537,7 @@ function resetForm() {
     document.querySelectorAll(`[data-household-notice-group="${index}"] input`).forEach((input) => { input.checked = input.value === "Y"; });
     document.getElementById(`ownershipInfo${index}`).hidden = true;
     document.getElementById(`ownershipInfo${index}`).textContent = "";
+    syncPlateRegion(index);
     updateCategoryInfo(index);
     syncCompactDiscount(index);
   }
@@ -528,6 +564,10 @@ async function handleSubmit() {
   for (const vehicle of activeVehicles) {
     if (!vehicle.plate_middle || !vehicle.plate_number) {
       setStatus(`차량 ${vehicle.car_order}의 차량번호 앞부분과 뒷부분을 모두 입력해 주세요.`, "error");
+      return;
+    }
+    if (hasPlateRegion(vehicle.car_order) && !vehicle.plate_region) {
+      setStatus(`차량 ${vehicle.car_order}의 번호판 지역명을 선택해 주세요.`, "error");
       return;
     }
     if (!vehicle.owner_name) {
